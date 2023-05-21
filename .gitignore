@@ -1,6 +1,7 @@
 # compiled output
 .env
 /node_modules
+/uploads
 
 # Logs
 logs

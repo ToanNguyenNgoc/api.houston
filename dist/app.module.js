@@ -10,13 +10,45 @@ exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
+const config_1 = require("@nestjs/config");
+const mailer_1 = require("@nestjs-modules/mailer");
+const handlebars_adapter_1 = require("@nestjs-modules/mailer/dist/adapters/handlebars.adapter");
+const mailerConfig = {
+    imports: [config_1.ConfigModule],
+    useFactory: (configService) => ({
+        transport: {
+            host: 'smtp.sendgrid.net',
+            auth: {
+                user: configService.get('MAILER_USER'),
+                pass: configService.get('MAILER_PASSWORD'),
+            },
+        },
+        template: {
+            dir: __dirname + '/templates',
+            adapter: new handlebars_adapter_1.HandlebarsAdapter(),
+            options: {
+                strict: true,
+            },
+        },
+    }),
+    inject: [config_1.ConfigService]
+};
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [],
-        controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService],
+        imports: [
+            config_1.ConfigModule.forRoot({
+                isGlobal: true,
+            }),
+            mailer_1.MailerModule.forRootAsync(mailerConfig),
+        ],
+        controllers: [
+            app_controller_1.AppController
+        ],
+        providers: [
+            app_service_1.AppService,
+        ],
     })
 ], AppModule);
 exports.AppModule = AppModule;
