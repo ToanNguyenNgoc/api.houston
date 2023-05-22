@@ -1,0 +1,1 @@
+{"version":3,"file":"api-header.guard.js","sourceRoot":"","sources":["../../../../src/middlewares/guards/api-header.guard.ts"],"names":[],"mappings":";;;;;;;;;AAIA,2CAA2C;AAC3C,+CAA6C;AAGtC,IAAM,cAAc,GAApB,MAAM,cAAe,SAAQ,IAAA,oBAAS,EAAC,WAAW,CAAC;CAAI,CAAA;AAAjD,cAAc;IAD1B,IAAA,mBAAU,GAAE;GACA,cAAc,CAAmC;AAAjD,wCAAc"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"send-mail.controller.js","sourceRoot":"","sources":["../../../../src/api/sendmail/send-mail.controller.ts"],"names":[],"mappings":";;;;;;;;;;;;AAIA,mDAAuD;AACvD,2CAA4C;AAKrC,IAAM,kBAAkB,GAAxB,MAAM,kBAAkB;IAC7B,YACmB,aAA4B;QAA5B,kBAAa,GAAb,aAAa,CAAe;IAC3C,CAAC;CAcN,CAAA;AAjBY,kBAAkB;IAD9B,IAAA,mBAAU,EAAC,WAAW,CAAC;qCAGY,sBAAa;GAFpC,kBAAkB,CAiB9B;AAjBY,gDAAkB"}
