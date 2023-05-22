@@ -10,6 +10,8 @@ exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
+const typeorm_1 = require("@nestjs/typeorm");
+const data_source_1 = require("../db/data-source");
 const config_1 = require("@nestjs/config");
 const mailer_1 = require("@nestjs-modules/mailer");
 const handlebars_adapter_1 = require("@nestjs-modules/mailer/dist/adapters/handlebars.adapter");
@@ -41,6 +43,7 @@ AppModule = __decorate([
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
             }),
+            typeorm_1.TypeOrmModule.forRootAsync(data_source_1.typeOrmAsyncConfig),
             mailer_1.MailerModule.forRootAsync(mailerConfig),
         ],
         controllers: [

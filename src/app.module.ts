@@ -4,7 +4,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-// import { typeOrmAsyncConfig } from '../db/data-source';
+import { typeOrmAsyncConfig } from '../db/data-source';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 // import { Role } from './system/role/entities';
 // import { cloudinaryConfig, recaptchaConfig } from './config'
@@ -42,7 +42,7 @@ const mailerConfig: MailerAsyncOptions = {
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    // TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
+    TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
     // TypeOrmModule.forFeature([Role]),
     // CloudinaryModule.forRootAsync(cloudinaryConfig),
     MailerModule.forRootAsync(mailerConfig),
