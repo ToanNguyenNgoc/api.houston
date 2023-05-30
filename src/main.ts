@@ -4,8 +4,9 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { customOptions, options } from './swagger';
-import { join } from 'path';
 import * as cookieParser from 'cookie-parser';
+import * as session from 'express-session';
+import * as passport from 'passport'
 
 
 async function bootstrap() {
@@ -20,6 +21,18 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe())
   app.useStaticAssets(__dirname + 'public');
   app.use(cookieParser())
+  app.use(
+    session({
+      secret: 'asiodasjoddjdoasddasoidjasiodasdjaiodd',
+      saveUninitialized: false,
+      resave: false,
+      cookie: {
+        maxAge: 60000,
+      },
+    }),
+  );
+  app.use(passport.initialize());
+  app.use(passport.session());
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('docs', app, document, customOptions);
   await app.listen(process.env.TYPEORM_LOCAL_PORT || 3000);

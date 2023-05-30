@@ -1,4 +1,4 @@
-import { ApiModule } from './api/api.module';
+import { AuthHeaderModule } from './auth-header/auth-header.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -9,18 +9,15 @@ import { cloudinaryConfig, recaptchaConfig } from './config'
 import { CloudinaryModule } from 'nestjs-cloudinary';
 import { GoogleRecaptchaModule } from '@nestlab/google-recaptcha';
 import { APP_GUARD } from '@nestjs/core';
+// import { ApiHeaderGuard } from './middlewares/guards';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { MailerAsyncOptions } from '@nestjs-modules/mailer/dist/interfaces/mailer-async-options.interface';
-// import { Role } from './system/role/entities';
-// import { ApiHeaderGuard } from './middlewares/guards';
-// import { AuthHeaderModule } from './auth-header/auth-header.module';
+import { Role } from 'src/api/role/entities';
+import { ApiModule } from 'src/api/api.module';
 
 const mailerConfig: MailerAsyncOptions = {
-  imports: [
-    ApiModule,
-    ConfigModule
-  ],
+  imports: [ConfigModule],
   useFactory: (configService: ConfigService) => ({
     transport: {
       host: 'smtp.sendgrid.net',
@@ -42,11 +39,13 @@ const mailerConfig: MailerAsyncOptions = {
 
 @Module({
   imports: [
+    // AuthHeaderModule,
+    ApiModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
-    // TypeOrmModule.forFeature([Role]),
+    TypeOrmModule.forFeature([Role]),
     CloudinaryModule.forRootAsync(cloudinaryConfig),
     MailerModule.forRootAsync(mailerConfig),
     GoogleRecaptchaModule.forRootAsync(recaptchaConfig),
@@ -56,6 +55,10 @@ const mailerConfig: MailerAsyncOptions = {
   ],
   providers: [
     AppService,
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: ApiHeaderGuard,
+    // },
   ],
 })
 export class AppModule { }

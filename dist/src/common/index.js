@@ -8,7 +8,8 @@ exports.name = {
     JWT_COOKIE: 'json_web_token_cookie',
     JWT_REFRESH: 'json_web_token_refresh',
     AGE_TOKEN: 60 * 1000 * 2,
-    AGE_RE_TOKEN: onHours * 24 * 30
+    AGE_RE_TOKEN: onHours * 24 * 30,
+    GOOGLE_OAUTH_2: 'google_oauth_2'
 };
 exports.key = {
     SUPER_ADMIN: 'Super Admin'

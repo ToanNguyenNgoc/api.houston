@@ -35,6 +35,7 @@ const villa_cate_module_1 = require("./villa_cate/villa_cate.module");
 const villagallery_module_1 = require("./villa_gallery/villagallery.module");
 const villaroom_module_1 = require("./villa_room/villaroom.module");
 const strategy_1 = require("../middlewares/strategy");
+const serializer_1 = require("../middlewares/serializer");
 let ApiModule = class ApiModule {
 };
 ApiModule = __decorate([
@@ -71,6 +72,8 @@ ApiModule = __decorate([
             strategy_1.JwtSysStrategy,
             strategy_1.JwtCookieStrategy,
             strategy_1.JwtRefreshStrategy,
+            strategy_1.GoogleStrategy,
+            serializer_1.SessionSerializer
         ],
     })
 ], ApiModule);

@@ -6,6 +6,7 @@ export declare const name: {
     JWT_REFRESH: string;
     AGE_TOKEN: number;
     AGE_RE_TOKEN: number;
+    GOOGLE_OAUTH_2: string;
 };
 export declare const key: {
     SUPER_ADMIN: string;

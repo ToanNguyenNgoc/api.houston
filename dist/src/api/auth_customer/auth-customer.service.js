@@ -120,77 +120,82 @@ let AuthCustomerService = class AuthCustomerService {
     }
     async register(body) {
         var _a;
-        if (body.email && !body.code) {
-            const code = (0, utils_1.randomCode)(6).trim();
-            await this.sendMailService.onSendMail({
-                to: body.email,
-                subject: 'Houston - Register ✔',
-                template: 'otp',
-                context: {
-                    data: {
-                        email: body.email,
-                        code: code
+        try {
+            if (body.email && !body.code) {
+                const code = (0, utils_1.randomCode)(6).trim();
+                await this.sendMailService.onSendMail({
+                    to: body.email,
+                    subject: 'Houston - Register ✔',
+                    template: 'otp',
+                    context: {
+                        data: {
+                            email: body.email,
+                            code: code
+                        }
                     }
-                }
-            });
-            const otp = new entities_2.OtpEntity();
-            otp.email = body.email, otp.code = code;
-            await this.otpRe.save(otp);
-            return { message: `An email send to ${body.email}` };
-        }
-        if (body.email && body.code) {
-            const resOtp = await this.otpRe
-                .createQueryBuilder('tb_otp')
-                .where({ email: body.email, code: body.code })
-                .getOne();
-            if (!resOtp) {
-                throw new common_1.NotFoundException('Code is invalid !');
+                });
+                const otp = new entities_2.OtpEntity();
+                otp.email = body.email, otp.code = code;
+                await this.otpRe.save(otp);
+                return { message: `An email send to ${body.email}` };
             }
-            const otpTime = moment(resOtp === null || resOtp === void 0 ? void 0 : resOtp.created_at).format('YYYYMMDDHHmm');
-            const currentTime = moment().format('YYYYMMDDHHmm');
-            if (parseInt(currentTime) - parseInt(otpTime) > 10) {
+            if (body.email && body.code) {
+                const resOtp = await this.otpRe
+                    .createQueryBuilder('tb_otp')
+                    .where({ email: body.email, code: body.code })
+                    .getOne();
+                if (!resOtp) {
+                    throw new common_1.NotFoundException('Code is invalid !');
+                }
+                const otpTime = moment(resOtp === null || resOtp === void 0 ? void 0 : resOtp.created_at).format('YYYYMMDDHHmm');
+                const currentTime = moment().format('YYYYMMDDHHmm');
+                if (parseInt(currentTime) - parseInt(otpTime) > 10) {
+                    await this.removeOtp(body.email, body.code);
+                    throw new common_1.BadRequestException('This code is expired');
+                }
+                if (body.dob && !(0, utils_1.isDateDobFormat)(body.dob)) {
+                    throw new common_1.BadRequestException('Date is must be format YYYY-MM-DD');
+                }
+                if (await this.customerRe
+                    .createQueryBuilder('tb_customer')
+                    .where({ email: body.email })
+                    .getOne()) {
+                    throw new common_1.BadRequestException('`Email belong to another account`');
+                }
+                if (await this.customerRe
+                    .createQueryBuilder('tb_customer')
+                    .where({ telephone: body.telephone })
+                    .getOne()) {
+                    throw new common_1.BadRequestException('`Telephone belong to another account`');
+                }
+                const newCustomer = new entities_1.Customer();
+                newCustomer.email = body.email;
+                newCustomer.password = body.password ? await (0, utils_1.generatePassword)(body.password) : undefined;
+                newCustomer.fullname = (_a = body.fullname) !== null && _a !== void 0 ? _a : '';
+                newCustomer.telephone = body.telephone;
+                newCustomer.full_address = body.full_address;
+                newCustomer.dob = body.dob;
+                newCustomer.country = body.country;
+                newCustomer.email_transfer = body.email;
+                const response = await this.customerRe.save(newCustomer);
+                delete response.password;
+                delete response.email_transfer;
                 await this.removeOtp(body.email, body.code);
-                throw new common_1.BadRequestException('This code is expired');
-            }
-            if (body.dob && !(0, utils_1.isDateDobFormat)(body.dob)) {
-                throw new common_1.BadRequestException('Date is must be format YYYY-MM-DD');
-            }
-            if (await this.customerRe
-                .createQueryBuilder('tb_customer')
-                .where({ email: body.email })
-                .getOne()) {
-                throw new common_1.BadRequestException('`Email belong to another account`');
-            }
-            if (await this.customerRe
-                .createQueryBuilder('tb_customer')
-                .where({ telephone: body.telephone })
-                .getOne()) {
-                throw new common_1.BadRequestException('`Telephone belong to another account`');
-            }
-            const newCustomer = new entities_1.Customer();
-            newCustomer.email = body.email;
-            newCustomer.password = body.password ? await (0, utils_1.generatePassword)(body.password) : undefined;
-            newCustomer.fullname = (_a = body.fullname) !== null && _a !== void 0 ? _a : '';
-            newCustomer.telephone = body.telephone;
-            newCustomer.full_address = body.full_address;
-            newCustomer.dob = body.dob;
-            newCustomer.country = body.country;
-            newCustomer.email_transfer = body.email;
-            const response = await this.customerRe.save(newCustomer);
-            delete response.password;
-            delete response.email_transfer;
-            await this.removeOtp(body.email, body.code);
-            await this.sendMailService.onSendMail({
-                to: body.email,
-                subject: 'Welcome to Houston ✔',
-                template: 'welcome',
-                context: {
-                    data: {
-                        fullname: body.fullname || body.email,
+                await this.sendMailService.onSendMail({
+                    to: body.email,
+                    subject: 'Welcome to Houston ✔',
+                    template: 'welcome',
+                    context: {
+                        data: {
+                            fullname: body.fullname || body.email,
+                        }
                     }
-                }
-            });
-            return { data: response };
+                });
+                return { data: response };
+            }
+        }
+        catch (error) {
+            throw new common_1.BadRequestException(`${error}`);
         }
     }
     async updateProfile(req, body) {

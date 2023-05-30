@@ -25,10 +25,13 @@ import { VillaModule } from 'src/api/villa/villa.module';
 import { VillaCateModule } from 'src/api/villa_cate/villa_cate.module';
 import { VillaGalleryModule } from 'src/api/villa_gallery/villagallery.module';
 import { VillaRoomModule } from 'src/api/villa_room/villaroom.module';
-import { JwtCookieStrategy, JwtRefreshStrategy, JwtSysStrategy } from 'src/middlewares/strategy';
+import { OAuthModule } from 'src/api/oauth/oauth.module';
+import { GoogleStrategy, JwtCookieStrategy, JwtRefreshStrategy, JwtSysStrategy } from 'src/middlewares/strategy';
+import { SessionSerializer } from 'src/middlewares/serializer';
 
 @Module({
     imports: [
+        // OAuthModule,
         PermissionModule,
         RoleModule,
         AccountModule,
@@ -64,6 +67,8 @@ import { JwtCookieStrategy, JwtRefreshStrategy, JwtSysStrategy } from 'src/middl
         JwtSysStrategy,
         JwtCookieStrategy,
         JwtRefreshStrategy,
+        GoogleStrategy,
+        SessionSerializer
     ],
 })
 export class ApiModule { }

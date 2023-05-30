@@ -7,7 +7,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
-const api_module_1 = require("./api/api.module");
 const common_1 = require("@nestjs/common");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
@@ -19,11 +18,10 @@ const nestjs_cloudinary_1 = require("nestjs-cloudinary");
 const google_recaptcha_1 = require("@nestlab/google-recaptcha");
 const mailer_1 = require("@nestjs-modules/mailer");
 const handlebars_adapter_1 = require("@nestjs-modules/mailer/dist/adapters/handlebars.adapter");
+const entities_1 = require("./api/role/entities");
+const api_module_1 = require("./api/api.module");
 const mailerConfig = {
-    imports: [
-        api_module_1.ApiModule,
-        config_1.ConfigModule
-    ],
+    imports: [config_1.ConfigModule],
     useFactory: (configService) => ({
         transport: {
             host: 'smtp.sendgrid.net',
@@ -47,10 +45,12 @@ let AppModule = class AppModule {
 AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            api_module_1.ApiModule,
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
             }),
             typeorm_1.TypeOrmModule.forRootAsync(data_source_1.typeOrmAsyncConfig),
+            typeorm_1.TypeOrmModule.forFeature([entities_1.Role]),
             nestjs_cloudinary_1.CloudinaryModule.forRootAsync(config_2.cloudinaryConfig),
             mailer_1.MailerModule.forRootAsync(mailerConfig),
             google_recaptcha_1.GoogleRecaptchaModule.forRootAsync(config_2.recaptchaConfig),
