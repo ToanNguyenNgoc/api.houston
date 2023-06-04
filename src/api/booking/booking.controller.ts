@@ -63,7 +63,7 @@ export class BookingCustomerController {
   constructor(
     private readonly bookingService: BookingService
   ) { }
-  @Recaptcha({ response: req => req.body.recaptcha, action: 'BOOKING_CUSTOMER', score: 0.8 })
+  // @Recaptcha({ response: req => req.body.recaptcha, action: 'BOOKING_CUSTOMER', score: 0.8 })
   @Post('')
   create(@Req() req: RequestHeader<Customer>, @Body() body: CreateBookingCustomerDto) {
     return this.bookingService.createByCustomer(req, body)
