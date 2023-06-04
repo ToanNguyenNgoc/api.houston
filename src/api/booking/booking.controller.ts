@@ -10,6 +10,7 @@ import { BookingGuard } from './booking.guard';
 import { name } from '../../common';
 import { JwtSysGuard, RoleGuard } from '../../middlewares/guards';
 import { RequestHeader } from '../../interface';
+import { Recaptcha } from '@nestlab/google-recaptcha';
 
 @ApiTags('bookings & bookings customer')
 @Controller('bookings')
@@ -62,7 +63,7 @@ export class BookingCustomerController {
   constructor(
     private readonly bookingService: BookingService
   ) { }
-  // @Recaptcha({ response: req => req.body.recaptcha, action: 'BOOKING_CUSTOMER', score: 0.8 })
+  @Recaptcha({ response: req => req.body.recaptcha, action: 'BOOKING_CUSTOMER', score: 0.8 })
   @Post('')
   create(@Req() req: RequestHeader<Customer>, @Body() body: CreateBookingCustomerDto) {
     return this.bookingService.createByCustomer(req, body)

@@ -22,6 +22,7 @@ const dto_1 = require("./dto");
 const booking_guard_1 = require("./booking.guard");
 const common_2 = require("../../common");
 const guards_1 = require("../../middlewares/guards");
+const google_recaptcha_1 = require("@nestlab/google-recaptcha");
 let BookingController = class BookingController {
     constructor(bookingService) {
         this.bookingService = bookingService;
@@ -114,6 +115,7 @@ let BookingCustomerController = class BookingCustomerController {
     }
 };
 __decorate([
+    (0, google_recaptcha_1.Recaptcha)({ response: req => req.body.recaptcha, action: 'BOOKING_CUSTOMER', score: 0.8 }),
     (0, common_1.Post)(''),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
