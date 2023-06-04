@@ -26,7 +26,7 @@ export declare class BookingCustomerController {
     private readonly bookingService;
     constructor(bookingService: BookingService);
     create(req: RequestHeader<Customer>, body: CreateBookingCustomerDto): Promise<{
-        data: import("./entities").Booking;
+        data: string;
     }>;
     findAll(req: RequestHeader<Customer>, query: QueryBookingCustomer): Promise<import("../../interface").TransformData<import("./entities").Booking[]>>;
     findOne(req: RequestHeader<Customer>, id: string): Promise<{

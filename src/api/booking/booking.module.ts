@@ -10,7 +10,7 @@ import { Customer } from '../customer/entities';
 import { Account } from '../account/entities';
 import { Villa } from '../villa/entities';
 import { Branch } from '../branches/entities';
-import { SendMailService } from '../../services';
+import { SendMailService, VnpayService } from '../../services';
 
 @Module({
   imports: [TypeOrmModule.forFeature([
@@ -24,6 +24,6 @@ import { SendMailService } from '../../services';
     BookingController,
     BookingCustomerController
   ],
-  providers: [BookingService, SendMailService]
+  providers: [BookingService, SendMailService, VnpayService]
 })
 export class BookingModule { }

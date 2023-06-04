@@ -21,18 +21,18 @@ const entities_2 = require("../villa/entities");
 const entities_3 = require("../customer/entities");
 const entities_4 = require("../account/entities");
 const entities_5 = require("./entities");
-const moment = require("moment");
 const services_1 = require("../../services");
 const utils_1 = require("../../utils");
 const common_2 = require("../../common");
 let BookingService = class BookingService {
-    constructor(branchRe, villaRe, customerRe, accountRe, bookingRe, sendMail) {
+    constructor(branchRe, villaRe, customerRe, accountRe, bookingRe, sendMail, vnpayService) {
         this.branchRe = branchRe;
         this.villaRe = villaRe;
         this.customerRe = customerRe;
         this.accountRe = accountRe;
         this.bookingRe = bookingRe;
         this.sendMail = sendMail;
+        this.vnpayService = vnpayService;
     }
     async create(req, body) {
         var _a, _b;
@@ -181,27 +181,8 @@ let BookingService = class BookingService {
             booking.note = body.note;
             booking.amount = nights * villa.special_price;
             booking.booking_platform = 'WEB_CLIENT';
-            const response = await this.bookingRe.save(booking);
-            delete response.customer.password;
-            await this.sendMail.onSendMail({
-                to: customer.email,
-                subject: 'Houston - Confirm Booking ✔',
-                template: 'booking_confirm',
-                context: {
-                    data: {
-                        customer: customer,
-                        villa: villa,
-                        villa_price: (0, utils_1.formatPrice)(villa.special_price),
-                        date_from: moment(response.from_date_booking).format('DD/MM/YYYY'),
-                        date_to: moment(response.to_date_booking).format('DD/MM/YYYY'),
-                        nights: nights,
-                        customer_count: `Bao gồm ${response.customer_count + response.baby_count} người 
-          (${response.customer_count} người lớn ${response.baby_count > 0 ? ` & ${response.baby_count} trẻ em` : ''})`,
-                        amount: (0, utils_1.formatPrice)(response.amount)
-                    }
-                }
-            });
-            return { data: response };
+            const t = await this.vnpayService.createPaymentGateway({ req });
+            return { data: t };
         }
         catch (error) {
             throw new common_1.BadRequestException(`${error}`);
@@ -269,7 +250,8 @@ BookingService = __decorate([
         typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository,
-        services_1.SendMailService])
+        services_1.SendMailService,
+        services_1.VnpayService])
 ], BookingService);
 exports.BookingService = BookingService;
 //# sourceMappingURL=booking.service.js.map

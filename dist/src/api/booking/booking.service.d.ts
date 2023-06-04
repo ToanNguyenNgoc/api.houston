@@ -7,7 +7,7 @@ import { Customer } from '../customer/entities';
 import { Account } from '../account/entities';
 import { Booking } from './entities';
 import { QueryBooking, QueryBookingCustomer } from './dto';
-import { SendMailService } from '../../services';
+import { SendMailService, VnpayService } from '../../services';
 import { RequestHeader } from '../../interface';
 export declare class BookingService {
     private readonly branchRe;
@@ -16,7 +16,8 @@ export declare class BookingService {
     private readonly accountRe;
     private readonly bookingRe;
     private readonly sendMail;
-    constructor(branchRe: Repository<Branch>, villaRe: Repository<Villa>, customerRe: Repository<Customer>, accountRe: Repository<Account>, bookingRe: Repository<Booking>, sendMail: SendMailService);
+    private readonly vnpayService;
+    constructor(branchRe: Repository<Branch>, villaRe: Repository<Villa>, customerRe: Repository<Customer>, accountRe: Repository<Account>, bookingRe: Repository<Booking>, sendMail: SendMailService, vnpayService: VnpayService);
     create(req: RequestHeader<Account>, body: CreateBookingDto): Promise<{
         data: Booking;
     }>;
@@ -31,7 +32,7 @@ export declare class BookingService {
         data: string;
     }>;
     createByCustomer(req: RequestHeader<Customer>, body: CreateBookingCustomerDto): Promise<{
-        data: Booking;
+        data: string;
     }>;
     findAllByCustomer(req: RequestHeader<Customer>, query: QueryBookingCustomer): Promise<import("../../interface").TransformData<Booking[]>>;
     findOneByCustomer(req: RequestHeader<Customer>, id: string): Promise<{

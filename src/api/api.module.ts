@@ -28,6 +28,7 @@ import { VillaRoomModule } from 'src/api/villa_room/villaroom.module';
 import { OAuthModule } from 'src/api/oauth/oauth.module';
 import { GoogleStrategy, JwtCookieStrategy, JwtRefreshStrategy, JwtSysStrategy } from 'src/middlewares/strategy';
 import { SessionSerializer } from 'src/middlewares/serializer';
+import { PaymentGatewayModule } from 'src/api/payment_gateway/paymentgateway.module';
 
 @Module({
     imports: [
@@ -56,6 +57,7 @@ import { SessionSerializer } from 'src/middlewares/serializer';
         RevenueModule,
         RefreshTokenModule,
         BannerModule,
+        PaymentGatewayModule,
         //
         CompanyModule,
         // CompanySocialModule,

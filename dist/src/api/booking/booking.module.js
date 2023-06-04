@@ -32,7 +32,7 @@ BookingModule = __decorate([
             booking_controller_1.BookingController,
             booking_controller_1.BookingCustomerController
         ],
-        providers: [booking_service_1.BookingService, services_1.SendMailService]
+        providers: [booking_service_1.BookingService, services_1.SendMailService, services_1.VnpayService]
     })
 ], BookingModule);
 exports.BookingModule = BookingModule;
