@@ -36,6 +36,7 @@ const villagallery_module_1 = require("./villa_gallery/villagallery.module");
 const villaroom_module_1 = require("./villa_room/villaroom.module");
 const strategy_1 = require("../middlewares/strategy");
 const serializer_1 = require("../middlewares/serializer");
+const payment_method_module_1 = require("./payment_method/payment_method.module");
 let ApiModule = class ApiModule {
 };
 ApiModule = __decorate([
@@ -66,6 +67,7 @@ ApiModule = __decorate([
             refreshtoken_module_1.RefreshTokenModule,
             banner_module_1.BannerModule,
             company_module_1.CompanyModule,
+            payment_method_module_1.PaymentMethodModule,
         ],
         controllers: [],
         providers: [
