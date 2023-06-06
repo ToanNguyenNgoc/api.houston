@@ -10,6 +10,7 @@ import { BookingGuard } from './booking.guard';
 import { name } from '../../common';
 import { JwtSysGuard, RoleGuard } from '../../middlewares/guards';
 import { RequestHeader } from '../../interface';
+import { Recaptcha } from '@nestlab/google-recaptcha';
 
 @ApiTags('bookings & bookings customer')
 @Controller('bookings')

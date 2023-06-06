@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.transformResponse = exports.key = exports.name = void 0;
+exports.transformResponse = exports.payKey = exports.key = exports.name = void 0;
 const onHours = 60 * 60 * 1000;
 exports.name = {
     JWT: 'json_web_token',
@@ -12,7 +12,11 @@ exports.name = {
     GOOGLE_OAUTH_2: 'google_oauth_2'
 };
 exports.key = {
-    SUPER_ADMIN: 'Super Admin'
+    SUPER_ADMIN: 'Super Admin',
+};
+exports.payKey = {
+    CASH: "CASH",
+    VNPAY: "VNPAY"
 };
 const transformResponse = (data, total, page, limit) => {
     return {

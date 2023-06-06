@@ -4,6 +4,7 @@ exports.VnpayService = void 0;
 const moment = require("moment");
 const querystring = require("qs");
 const crypto_1 = require("crypto");
+const utils_1 = require("../utils");
 const sortObject = (obj) => {
     const sorted = {};
     const keys = Object.keys(obj).sort();
@@ -13,7 +14,7 @@ const sortObject = (obj) => {
     return sorted;
 };
 class VnpayService {
-    async createPaymentGateway({ req }) {
+    createPaymentGateway({ req, amount, bankCode }) {
         const createDate = moment().format('YYYYMMDDHHmmss');
         const ipAddr = req.headers['x-forwarded-for'] ||
             req.connection.remoteAddress ||
@@ -22,9 +23,7 @@ class VnpayService {
         const secretKey = process.env.VN_SECRET_KEY;
         let vnpUrl = process.env.VN_CREATE_PAY_URL;
         const returnUrl = process.env.VN_RETURN_URL;
-        const orderId = moment().format('DDHHmmss');
-        const amount = 10000;
-        const bankCode = 'VNBANK';
+        const orderId = (0, utils_1.encode)(`${moment().format('DDHHmmss')}-${moment().milliseconds()}`);
         const locale = 'vn';
         const currCode = 'VND';
         let vnp_Params = {};
@@ -47,8 +46,14 @@ class VnpayService {
         const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
         vnp_Params['vnp_SecureHash'] = signed;
         vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: true });
-        console.log(vnpUrl);
-        return signData;
+        const callbackUrl = process.env.VN_PAY_CALLBACK_URL;
+        return {
+            transaction: createDate,
+            txn_ref: orderId,
+            payment_url: vnpUrl,
+            callback_url: `${callbackUrl}?txn_ref=${orderId}`,
+            secure_hash: signed
+        };
     }
 }
 exports.VnpayService = VnpayService;

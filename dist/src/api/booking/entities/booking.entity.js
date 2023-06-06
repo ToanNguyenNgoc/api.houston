@@ -15,6 +15,8 @@ const entities_1 = require("../../customer/entities");
 const entities_2 = require("../../account/entities");
 const entities_3 = require("../../villa/entities");
 const entities_4 = require("../../branches/entities");
+const entities_5 = require("../../payment_method/entities");
+const entities_6 = require("../../payment_gateway/entities");
 let Booking = class Booking {
 };
 __decorate([
@@ -89,6 +91,15 @@ __decorate([
     (0, typeorm_1.Column)({ default: 'MANAGER' }),
     __metadata("design:type", String)
 ], Booking.prototype, "booking_platform", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => entities_5.PaymentMethod, (payment_method) => payment_method.bookings),
+    __metadata("design:type", entities_5.PaymentMethod)
+], Booking.prototype, "payment_method", void 0);
+__decorate([
+    (0, typeorm_1.OneToOne)(() => entities_6.PaymentGateway),
+    (0, typeorm_1.JoinColumn)(),
+    __metadata("design:type", entities_6.PaymentGateway)
+], Booking.prototype, "payment_gateway", void 0);
 Booking = __decorate([
     (0, typeorm_1.Entity)({ name: 'tb_booking' })
 ], Booking);

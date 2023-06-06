@@ -18,11 +18,6 @@ __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
-], QueryVnpay.prototype, "vnp_TxnRef", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", String)
-], QueryVnpay.prototype, "vnp_TransactionDate", void 0);
+], QueryVnpay.prototype, "txn_ref", void 0);
 exports.QueryVnpay = QueryVnpay;
 //# sourceMappingURL=query-vnpay.js.map

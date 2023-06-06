@@ -11,6 +11,8 @@ import { Account } from '../account/entities';
 import { Villa } from '../villa/entities';
 import { Branch } from '../branches/entities';
 import { SendMailService, VnpayService } from '../../services';
+import { PaymentMethod } from 'src/api/payment_method/entities';
+import { PaymentGateway } from 'src/api/payment_gateway/entities';
 
 @Module({
   imports: [TypeOrmModule.forFeature([
@@ -18,7 +20,9 @@ import { SendMailService, VnpayService } from '../../services';
     Booking,
     Customer,
     Account,
-    Villa
+    Villa,
+    PaymentMethod,
+    PaymentGateway
   ])],
   controllers: [
     BookingController,

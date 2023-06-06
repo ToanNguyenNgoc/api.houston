@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, Matches } from "class-validator";
+import { IsIn, IsNotEmpty, Matches } from "class-validator";
+import { payKey } from "src/common";
 
 export class CreateBookingDto {
   @ApiProperty()
@@ -62,6 +63,13 @@ export class CreateBookingCustomerDto {
 
   @ApiProperty()
   note: string
+
+  @ApiProperty()
+  @IsIn([payKey.CASH, payKey.VNPAY])
+  payment_method:string;
+
+  @ApiProperty()
+  payment_method_bank:string;
 
   @ApiProperty()
   @IsNotEmpty()

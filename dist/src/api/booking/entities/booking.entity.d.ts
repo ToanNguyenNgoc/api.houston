@@ -2,6 +2,8 @@ import { Customer } from '../../customer/entities';
 import { Account } from '../../account/entities';
 import { Villa } from '../../villa/entities';
 import { Branch } from '../../branches/entities';
+import { PaymentMethod } from '../../payment_method/entities';
+import { PaymentGateway } from '../../payment_gateway/entities';
 export declare class Booking {
     id: number;
     customer: Customer;
@@ -21,4 +23,6 @@ export declare class Booking {
     updated_at: Date;
     amount: number;
     booking_platform: string;
+    payment_method: PaymentMethod;
+    payment_gateway: PaymentGateway;
 }

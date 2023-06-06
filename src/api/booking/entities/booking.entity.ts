@@ -4,12 +4,16 @@ import {
   Column,
   UpdateDateColumn,
   CreateDateColumn,
-  ManyToOne
+  ManyToOne,
+  OneToOne,
+  JoinColumn
 } from 'typeorm'
 import { Customer } from '../../customer/entities'
 import { Account } from '../../account/entities'
 import { Villa } from '../../villa/entities'
 import { Branch } from '../../branches/entities'
+import { PaymentMethod } from '../../payment_method/entities'
+import { PaymentGateway } from '../../payment_gateway/entities'
 
 @Entity({ name: 'tb_booking' })
 export class Booking {
@@ -66,4 +70,12 @@ export class Booking {
 
   @Column({ default: 'MANAGER' })
   booking_platform: string
+
+  @ManyToOne(() => PaymentMethod, (payment_method) => payment_method.bookings)
+  payment_method: PaymentMethod
+
+  @OneToOne(() => PaymentGateway)
+  @JoinColumn()
+  payment_gateway: PaymentGateway
+
 }

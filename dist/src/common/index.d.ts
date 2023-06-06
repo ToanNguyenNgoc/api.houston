@@ -11,4 +11,8 @@ export declare const name: {
 export declare const key: {
     SUPER_ADMIN: string;
 };
+export declare const payKey: {
+    CASH: string;
+    VNPAY: string;
+};
 export declare const transformResponse: <Data>(data: Data, total: number, page: number, limit: number) => TransformData<Data>;

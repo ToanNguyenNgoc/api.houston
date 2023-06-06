@@ -17,5 +17,7 @@ export declare class CreateBookingCustomerDto {
     customer_count: number;
     baby_count: number;
     note: string;
+    payment_method: string;
+    payment_method_bank: string;
     recaptcha: string;
 }

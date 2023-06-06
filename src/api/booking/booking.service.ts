@@ -13,57 +13,78 @@ import * as moment from 'moment'
 import { SendMailService, VnpayService } from '../../services';
 import { RequestHeader } from '../../interface';
 import { formatPrice, isSPAdmin, rangeDate } from '../../utils';
-import { transformResponse } from '../../common';
+import { payKey, transformResponse } from '../../common';
+import { PaymentMethod } from 'src/api/payment_method/entities';
+import { PaymentGateway } from 'src/api/payment_gateway/entities';
 
 @Injectable()
 export class BookingService {
   constructor(
     @InjectRepository(Branch)
     private readonly branchRe: Repository<Branch>,
+
     @InjectRepository(Villa)
     private readonly villaRe: Repository<Villa>,
+
     @InjectRepository(Customer)
     private readonly customerRe: Repository<Customer>,
+
     @InjectRepository(Account)
     private readonly accountRe: Repository<Account>,
+
     @InjectRepository(Booking)
     private readonly bookingRe: Repository<Booking>,
+
+    @InjectRepository(PaymentMethod)
+    private readonly paymentMethodRe: Repository<PaymentMethod>,
+
+    @InjectRepository(PaymentGateway)
+    private readonly paymentGatewayRe: Repository<PaymentGateway>,
+
     private readonly sendMail: SendMailService,
-    private readonly vnpayService:VnpayService
+    private readonly vnpayService: VnpayService
 
   ) { }
   async create(req: RequestHeader<Account>, body: CreateBookingDto) {
-    const user = req.user
-    const nights = rangeDate(body.from_date_booking, body.to_date_booking)
-    //[branch]:if account is super admin enable choose branch
-    if (nights < 0) throw new BadRequestException('Date to is invalid')
-    const account = req.user
-    const branch = await this.branchRe.createQueryBuilder('tb_branch')
-      .where({ id: isSPAdmin(user) ? body.branch_id : user.branch?.id, deleted: false }).getOne()
-    if (!branch) throw new NotFoundException('Cannot found branch')
-    const villa = await this.villaRe.createQueryBuilder('tb_villa')
-      .where({ id: body.villa_id, deleted: false }).getOne()
-    if (!villa) throw new NotFoundException('Cannot found villa')
-    const customer = await this.customerRe.createQueryBuilder('tb_customer')
-      .where({ id: body.customer_id, deleted: false }).getOne()
-    if (!customer) throw new NotFoundException('Cannot found customer')
-    const booking = new Booking()
-    booking.branch = branch
-    booking.villa = villa
-    booking.customer = customer
-    booking.employee = account
-    booking.from_date_booking = body.from_date_booking
-    booking.to_date_booking = body.to_date_booking
-    booking.nights = nights
-    booking.customer_count = body.customer_count
-    booking.baby_count = body.baby_count ?? 0
-    booking.note = body.note
-    booking.amount = nights * villa.special_price
-    const response = await this.bookingRe.save(booking)
-    delete response.customer.password
-    delete response.employee.password
+    try {
+      const user = req.user
+      const nights = rangeDate(body.from_date_booking, body.to_date_booking)
+      //[branch]:if account is super admin enable choose branch
+      if (nights < 0) throw new BadRequestException('Date to is invalid')
+      const account = req.user
+      const branch = await this.branchRe.createQueryBuilder('tb_branch')
+        .where({ id: isSPAdmin(user) ? body.branch_id : user.branch?.id, deleted: false }).getOne()
+      if (!branch) throw new NotFoundException('Cannot found branch')
+      const villa = await this.villaRe.createQueryBuilder('tb_villa')
+        .where({ id: body.villa_id, deleted: false }).getOne()
+      if (!villa) throw new NotFoundException('Cannot found villa')
+      const customer = await this.customerRe.createQueryBuilder('tb_customer')
+        .where({ id: body.customer_id, deleted: false }).getOne()
+      if (!customer) throw new NotFoundException('Cannot found customer')
+      const payment_method = await this.paymentMethodRe.createQueryBuilder('tb_payment_method')
+        .where({ name_key: payKey.CASH }).getOne()
+      if (!payment_method) throw new NotFoundException('Cannot found payment method')
+      const booking = new Booking()
+      booking.branch = branch
+      booking.villa = villa
+      booking.customer = customer
+      booking.employee = account
+      booking.from_date_booking = body.from_date_booking
+      booking.to_date_booking = body.to_date_booking
+      booking.nights = nights
+      booking.customer_count = body.customer_count
+      booking.baby_count = body.baby_count ?? 0
+      booking.note = body.note
+      booking.amount = nights * villa.special_price
+      booking.payment_method = payment_method
+      const response = await this.bookingRe.save(booking)
+      delete response.customer.password
+      delete response.employee.password
 
-    return { data: response };
+      return { data: response };
+    } catch (error) {
+      throw new BadRequestException(`${error}`)
+    }
   }
 
   async findAll(req: RequestHeader<Account>, query: QueryBooking) {
@@ -126,6 +147,7 @@ export class BookingService {
     if (joins.includes('villa_media')) {
       qb.leftJoinAndSelect('tb_villa.thumbnail', 'tb_media')
     }
+    qb.leftJoinAndSelect('tb_booking.payment_method', 'tb_payment_method')
     const response = await qb
       .offset((page * limit) - limit)
       .limit(limit)
@@ -176,52 +198,77 @@ export class BookingService {
   async createByCustomer(req: RequestHeader<Customer>, body: CreateBookingCustomerDto) {
     try {
       const customer = await this.customerRe.createQueryBuilder('tb_customer')
-      .where({ id: req.user.id, email: req.user.email })
-      .getOne()
-    const nights = rangeDate(body.from_date_booking, body.to_date_booking)
-    if (nights < 0) throw new BadRequestException('Date to is invalid')
-    if (!customer) throw new UnauthorizedException()
-    const branch = await this.branchRe.createQueryBuilder('tb_branch')
-      .where({ id: body.branch_id, deleted: false }).getOne()
-    if (!branch) throw new NotFoundException('Cannot found branch')
-    const villa = await this.villaRe.createQueryBuilder('tb_villa')
-      .where({ id: body.villa_id, deleted: false }).getOne()
-    if (!villa) throw new NotFoundException('Cannot found villa')
-    const booking = new Booking()
-    booking.customer = customer
-    booking.branch = branch
-    booking.villa = villa
-    booking.from_date_booking = body.from_date_booking
-    booking.to_date_booking = body.to_date_booking
-    booking.nights = nights
-    booking.customer_count = body.customer_count
-    booking.baby_count = body.baby_count ?? 0
-    booking.note = body.note
-    booking.amount = nights * villa.special_price
-    booking.booking_platform = 'WEB_CLIENT'
-    //
-    // const response = await this.bookingRe.save(booking)
-    // delete response.customer.password
-    // await this.sendMail.onSendMail({
-    //   to: customer.email,
-    //   subject: 'Houston - Confirm Booking ✔',
-    //   template: 'booking_confirm',
-    //   context: {
-    //     data: {
-    //       customer: customer,
-    //       villa: villa,
-    //       villa_price: formatPrice(villa.special_price),
-    //       date_from: moment(response.from_date_booking).format('DD/MM/YYYY'),
-    //       date_to: moment(response.to_date_booking).format('DD/MM/YYYY'),
-    //       nights: nights,
-    //       customer_count: `Bao gồm ${response.customer_count + response.baby_count} người 
-    //       (${response.customer_count} người lớn ${response.baby_count > 0 ? ` & ${response.baby_count} trẻ em` : ''})`,
-    //       amount: formatPrice(response.amount)
-    //     }
-    //   }
-    // })
-    const t = await this.vnpayService.createPaymentGateway({req})
-    return { data: t }
+        .where({ id: req.user.id, email: req.user.email })
+        .getOne()
+      const nights = rangeDate(body.from_date_booking, body.to_date_booking)
+      if (nights < 0) throw new BadRequestException('Date to is invalid')
+      if (!customer) throw new UnauthorizedException()
+      const branch = await this.branchRe.createQueryBuilder('tb_branch')
+        .where({ id: body.branch_id, deleted: false }).getOne()
+      if (!branch) throw new NotFoundException('Cannot found branch')
+      const villa = await this.villaRe.createQueryBuilder('tb_villa')
+        .where({ id: body.villa_id, deleted: false }).getOne()
+      if (!villa) throw new NotFoundException('Cannot found villa')
+      const payment_method = await this.paymentMethodRe.createQueryBuilder('tb_payment_method')
+        .where({ name_key: body.payment_method }).getOne()
+      if (!payment_method) throw new NotFoundException("Cannot found payment method")
+      const booking = new Booking()
+      booking.customer = customer
+      booking.branch = branch
+      booking.villa = villa
+      booking.from_date_booking = body.from_date_booking
+      booking.to_date_booking = body.to_date_booking
+      booking.nights = nights
+      booking.customer_count = body.customer_count
+      booking.baby_count = body.baby_count ?? 0
+      booking.note = body.note
+      booking.amount = nights * villa.special_price
+      booking.booking_platform = 'WEB_CLIENT'
+      booking.payment_method = payment_method
+      if (payment_method.name_key === payKey.CASH) {
+        const response = await this.bookingRe.save(booking)
+        delete response.customer.password
+        await this.sendMail.onSendMail({
+          to: customer.email,
+          subject: 'Houston - Confirm Booking ✔',
+          template: 'booking_confirm',
+          context: {
+            data: {
+              customer: customer,
+              villa: villa,
+              villa_price: formatPrice(villa.special_price),
+              date_from: moment(response.from_date_booking).format('DD/MM/YYYY'),
+              date_to: moment(response.to_date_booking).format('DD/MM/YYYY'),
+              nights: nights,
+              customer_count: `Bao gồm ${response.customer_count + response.baby_count} người 
+            (${response.customer_count} người lớn ${response.baby_count > 0 ? ` & ${response.baby_count} trẻ em` : ''})`,
+              amount: formatPrice(response.amount)
+            }
+          }
+        })
+        return { data: response }
+      }
+      if (payment_method.name_key === payKey.VNPAY) {
+        if (!await this.paymentMethodRe.createQueryBuilder('tb_payment_method')
+          .where({ name_key: body.payment_method, name_children_key: body.payment_method_bank })
+          .getOne()) throw new NotFoundException('Cannot found method bank')
+        const result = this.vnpayService.createPaymentGateway({
+          req, amount: nights * villa.special_price, bankCode: body.payment_method_bank
+        })
+        const gateway = new PaymentGateway()
+        gateway.amount = nights * villa.special_price
+        gateway.description = `Thanh toán cho thuê villa ${villa.name}`
+        gateway.transaction = result.transaction
+        gateway.txn_ref = result.txn_ref
+        gateway.payment_url = result.payment_url
+        gateway.callback_url = result.callback_url
+        gateway.secure_hash = result.secure_hash
+        const resGateway = await this.paymentGatewayRe.save(gateway)
+        booking.payment_gateway = resGateway
+        const response = await this.bookingRe.save(booking)
+        delete response.customer.password
+        return { data: response }
+      }
     } catch (error) {
       throw new BadRequestException(`${error}`)
     }
@@ -234,6 +281,8 @@ export class BookingService {
     const queryBuilder = this.bookingRe.createQueryBuilder('tb_booking')
       .where({ deleted: false })
       .leftJoin('tb_booking.customer', 'tb_customer')
+      .leftJoinAndSelect('tb_booking.payment_gateway','tb_payment_gateway')
+      .leftJoinAndSelect('tb_booking.payment_method','tb_payment_method')
       .addSelect(['tb_customer.id', 'tb_customer.fullname'])
       .andWhere(
         new Brackets((qb) => qb.where('tb_customer.id =:id', { id: user.id }))
@@ -268,6 +317,10 @@ export class BookingService {
   async findOneByCustomer(req: RequestHeader<Customer>, id: string) {
     const queryBuilder = this.bookingRe.createQueryBuilder('tb_booking')
       .where({ deleted: false, id: id })
+      .leftJoinAndSelect('tb_booking.payment_gateway','tb_payment_gateway')
+      .orWhere(
+        new Brackets((qb) => qb.orWhere('tb_payment_gateway.txn_ref =:txn_ref',{txn_ref: id}))
+      )
       .leftJoin('tb_booking.customer', 'tb_customer')
       .addSelect(['tb_customer.id', 'tb_customer.fullname'])
       .andWhere(
@@ -279,6 +332,7 @@ export class BookingService {
       .leftJoinAndSelect('tb_branch.district', 'tb_district')
       .leftJoinAndSelect('tb_branch.ward', 'tb_ward')
       .leftJoinAndSelect('tb_villa.thumbnail', 'tb_media')
+      .leftJoinAndSelect('tb_booking.payment_method','tb_payment_method')
     const response = await queryBuilder.getOne()
     if (!response) throw new NotFoundException('Cannot found')
     return { data: response }

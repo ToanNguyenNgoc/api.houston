@@ -21,54 +21,69 @@ const entities_2 = require("../villa/entities");
 const entities_3 = require("../customer/entities");
 const entities_4 = require("../account/entities");
 const entities_5 = require("./entities");
+const moment = require("moment");
 const services_1 = require("../../services");
 const utils_1 = require("../../utils");
 const common_2 = require("../../common");
+const entities_6 = require("../payment_method/entities");
+const entities_7 = require("../payment_gateway/entities");
 let BookingService = class BookingService {
-    constructor(branchRe, villaRe, customerRe, accountRe, bookingRe, sendMail, vnpayService) {
+    constructor(branchRe, villaRe, customerRe, accountRe, bookingRe, paymentMethodRe, paymentGatewayRe, sendMail, vnpayService) {
         this.branchRe = branchRe;
         this.villaRe = villaRe;
         this.customerRe = customerRe;
         this.accountRe = accountRe;
         this.bookingRe = bookingRe;
+        this.paymentMethodRe = paymentMethodRe;
+        this.paymentGatewayRe = paymentGatewayRe;
         this.sendMail = sendMail;
         this.vnpayService = vnpayService;
     }
     async create(req, body) {
         var _a, _b;
-        const user = req.user;
-        const nights = (0, utils_1.rangeDate)(body.from_date_booking, body.to_date_booking);
-        if (nights < 0)
-            throw new common_1.BadRequestException('Date to is invalid');
-        const account = req.user;
-        const branch = await this.branchRe.createQueryBuilder('tb_branch')
-            .where({ id: (0, utils_1.isSPAdmin)(user) ? body.branch_id : (_a = user.branch) === null || _a === void 0 ? void 0 : _a.id, deleted: false }).getOne();
-        if (!branch)
-            throw new common_1.NotFoundException('Cannot found branch');
-        const villa = await this.villaRe.createQueryBuilder('tb_villa')
-            .where({ id: body.villa_id, deleted: false }).getOne();
-        if (!villa)
-            throw new common_1.NotFoundException('Cannot found villa');
-        const customer = await this.customerRe.createQueryBuilder('tb_customer')
-            .where({ id: body.customer_id, deleted: false }).getOne();
-        if (!customer)
-            throw new common_1.NotFoundException('Cannot found customer');
-        const booking = new entities_5.Booking();
-        booking.branch = branch;
-        booking.villa = villa;
-        booking.customer = customer;
-        booking.employee = account;
-        booking.from_date_booking = body.from_date_booking;
-        booking.to_date_booking = body.to_date_booking;
-        booking.nights = nights;
-        booking.customer_count = body.customer_count;
-        booking.baby_count = (_b = body.baby_count) !== null && _b !== void 0 ? _b : 0;
-        booking.note = body.note;
-        booking.amount = nights * villa.special_price;
-        const response = await this.bookingRe.save(booking);
-        delete response.customer.password;
-        delete response.employee.password;
-        return { data: response };
+        try {
+            const user = req.user;
+            const nights = (0, utils_1.rangeDate)(body.from_date_booking, body.to_date_booking);
+            if (nights < 0)
+                throw new common_1.BadRequestException('Date to is invalid');
+            const account = req.user;
+            const branch = await this.branchRe.createQueryBuilder('tb_branch')
+                .where({ id: (0, utils_1.isSPAdmin)(user) ? body.branch_id : (_a = user.branch) === null || _a === void 0 ? void 0 : _a.id, deleted: false }).getOne();
+            if (!branch)
+                throw new common_1.NotFoundException('Cannot found branch');
+            const villa = await this.villaRe.createQueryBuilder('tb_villa')
+                .where({ id: body.villa_id, deleted: false }).getOne();
+            if (!villa)
+                throw new common_1.NotFoundException('Cannot found villa');
+            const customer = await this.customerRe.createQueryBuilder('tb_customer')
+                .where({ id: body.customer_id, deleted: false }).getOne();
+            if (!customer)
+                throw new common_1.NotFoundException('Cannot found customer');
+            const payment_method = await this.paymentMethodRe.createQueryBuilder('tb_payment_method')
+                .where({ name_key: common_2.payKey.CASH }).getOne();
+            if (!payment_method)
+                throw new common_1.NotFoundException('Cannot found payment method');
+            const booking = new entities_5.Booking();
+            booking.branch = branch;
+            booking.villa = villa;
+            booking.customer = customer;
+            booking.employee = account;
+            booking.from_date_booking = body.from_date_booking;
+            booking.to_date_booking = body.to_date_booking;
+            booking.nights = nights;
+            booking.customer_count = body.customer_count;
+            booking.baby_count = (_b = body.baby_count) !== null && _b !== void 0 ? _b : 0;
+            booking.note = body.note;
+            booking.amount = nights * villa.special_price;
+            booking.payment_method = payment_method;
+            const response = await this.bookingRe.save(booking);
+            delete response.customer.password;
+            delete response.employee.password;
+            return { data: response };
+        }
+        catch (error) {
+            throw new common_1.BadRequestException(`${error}`);
+        }
     }
     async findAll(req, query) {
         var _a, _b, _c, _d, _e;
@@ -107,6 +122,7 @@ let BookingService = class BookingService {
         if (joins.includes('villa_media')) {
             qb.leftJoinAndSelect('tb_villa.thumbnail', 'tb_media');
         }
+        qb.leftJoinAndSelect('tb_booking.payment_method', 'tb_payment_method');
         const response = await qb
             .offset((page * limit) - limit)
             .limit(limit)
@@ -169,6 +185,10 @@ let BookingService = class BookingService {
                 .where({ id: body.villa_id, deleted: false }).getOne();
             if (!villa)
                 throw new common_1.NotFoundException('Cannot found villa');
+            const payment_method = await this.paymentMethodRe.createQueryBuilder('tb_payment_method')
+                .where({ name_key: body.payment_method }).getOne();
+            if (!payment_method)
+                throw new common_1.NotFoundException("Cannot found payment method");
             const booking = new entities_5.Booking();
             booking.customer = customer;
             booking.branch = branch;
@@ -181,8 +201,52 @@ let BookingService = class BookingService {
             booking.note = body.note;
             booking.amount = nights * villa.special_price;
             booking.booking_platform = 'WEB_CLIENT';
-            const t = await this.vnpayService.createPaymentGateway({ req });
-            return { data: t };
+            booking.payment_method = payment_method;
+            if (payment_method.name_key === common_2.payKey.CASH) {
+                const response = await this.bookingRe.save(booking);
+                delete response.customer.password;
+                await this.sendMail.onSendMail({
+                    to: customer.email,
+                    subject: 'Houston - Confirm Booking ✔',
+                    template: 'booking_confirm',
+                    context: {
+                        data: {
+                            customer: customer,
+                            villa: villa,
+                            villa_price: (0, utils_1.formatPrice)(villa.special_price),
+                            date_from: moment(response.from_date_booking).format('DD/MM/YYYY'),
+                            date_to: moment(response.to_date_booking).format('DD/MM/YYYY'),
+                            nights: nights,
+                            customer_count: `Bao gồm ${response.customer_count + response.baby_count} người 
+            (${response.customer_count} người lớn ${response.baby_count > 0 ? ` & ${response.baby_count} trẻ em` : ''})`,
+                            amount: (0, utils_1.formatPrice)(response.amount)
+                        }
+                    }
+                });
+                return { data: response };
+            }
+            if (payment_method.name_key === common_2.payKey.VNPAY) {
+                if (!await this.paymentMethodRe.createQueryBuilder('tb_payment_method')
+                    .where({ name_key: body.payment_method, name_children_key: body.payment_method_bank })
+                    .getOne())
+                    throw new common_1.NotFoundException('Cannot found method bank');
+                const result = this.vnpayService.createPaymentGateway({
+                    req, amount: nights * villa.special_price, bankCode: body.payment_method_bank
+                });
+                const gateway = new entities_7.PaymentGateway();
+                gateway.amount = nights * villa.special_price;
+                gateway.description = `Thanh toán cho thuê villa ${villa.name}`;
+                gateway.transaction = result.transaction;
+                gateway.txn_ref = result.txn_ref;
+                gateway.payment_url = result.payment_url;
+                gateway.callback_url = result.callback_url;
+                gateway.secure_hash = result.secure_hash;
+                const resGateway = await this.paymentGatewayRe.save(gateway);
+                booking.payment_gateway = resGateway;
+                const response = await this.bookingRe.save(booking);
+                delete response.customer.password;
+                return { data: response };
+            }
         }
         catch (error) {
             throw new common_1.BadRequestException(`${error}`);
@@ -197,6 +261,8 @@ let BookingService = class BookingService {
         const queryBuilder = this.bookingRe.createQueryBuilder('tb_booking')
             .where({ deleted: false })
             .leftJoin('tb_booking.customer', 'tb_customer')
+            .leftJoinAndSelect('tb_booking.payment_gateway', 'tb_payment_gateway')
+            .leftJoinAndSelect('tb_booking.payment_method', 'tb_payment_method')
             .addSelect(['tb_customer.id', 'tb_customer.fullname'])
             .andWhere(new typeorm_2.Brackets((qb) => qb.where('tb_customer.id =:id', { id: user.id })));
         queryBuilder
@@ -223,6 +289,8 @@ let BookingService = class BookingService {
     async findOneByCustomer(req, id) {
         const queryBuilder = this.bookingRe.createQueryBuilder('tb_booking')
             .where({ deleted: false, id: id })
+            .leftJoinAndSelect('tb_booking.payment_gateway', 'tb_payment_gateway')
+            .orWhere(new typeorm_2.Brackets((qb) => qb.orWhere('tb_payment_gateway.txn_ref =:txn_ref', { txn_ref: id })))
             .leftJoin('tb_booking.customer', 'tb_customer')
             .addSelect(['tb_customer.id', 'tb_customer.fullname'])
             .andWhere(new typeorm_2.Brackets((qb) => qb.where('tb_customer.id =:id', { id: req.user.id })))
@@ -231,7 +299,8 @@ let BookingService = class BookingService {
             .leftJoinAndSelect('tb_branch.province', 'tb_province')
             .leftJoinAndSelect('tb_branch.district', 'tb_district')
             .leftJoinAndSelect('tb_branch.ward', 'tb_ward')
-            .leftJoinAndSelect('tb_villa.thumbnail', 'tb_media');
+            .leftJoinAndSelect('tb_villa.thumbnail', 'tb_media')
+            .leftJoinAndSelect('tb_booking.payment_method', 'tb_payment_method');
         const response = await queryBuilder.getOne();
         if (!response)
             throw new common_1.NotFoundException('Cannot found');
@@ -245,7 +314,11 @@ BookingService = __decorate([
     __param(2, (0, typeorm_1.InjectRepository)(entities_3.Customer)),
     __param(3, (0, typeorm_1.InjectRepository)(entities_4.Account)),
     __param(4, (0, typeorm_1.InjectRepository)(entities_5.Booking)),
+    __param(5, (0, typeorm_1.InjectRepository)(entities_6.PaymentMethod)),
+    __param(6, (0, typeorm_1.InjectRepository)(entities_7.PaymentGateway)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository,
+        typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository,

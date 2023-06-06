@@ -3,9 +3,12 @@ import { RequestHeader } from "src/interface"
 import * as moment from "moment"
 import * as querystring from "qs"
 import { createHmac } from "crypto"
+import { encode } from "src/utils"
 
 interface ICreatePayment {
-  req: RequestHeader<Customer>
+  req: RequestHeader<Customer>,
+  amount: number,
+  bankCode: "VNPAYQR" | "VNBANK" | "INTCARD" | any
 }
 
 const sortObject = (obj: Record<string, any>): Record<string, any> => {
@@ -20,8 +23,8 @@ const sortObject = (obj: Record<string, any>): Record<string, any> => {
 };
 
 export class VnpayService {
-  async createPaymentGateway({
-    req
+  createPaymentGateway({
+    req, amount, bankCode
   }: ICreatePayment) {
 
     const createDate = moment().format('YYYYMMDDHHmmss');
@@ -32,12 +35,9 @@ export class VnpayService {
     const secretKey = process.env.VN_SECRET_KEY
     let vnpUrl = process.env.VN_CREATE_PAY_URL
     const returnUrl = process.env.VN_RETURN_URL
-    const orderId = moment().format('DDHHmmss');
-    const amount = 10000;
-    const bankCode = 'VNBANK';
+    const orderId = encode(`${moment().format('DDHHmmss')}-${moment().milliseconds()}`);
     const locale = 'vn';
     const currCode = 'VND';
-
     let vnp_Params = {};
     vnp_Params['vnp_Version'] = process.env.VN_PAY_VERSION;
     vnp_Params['vnp_Command'] = 'pay';
@@ -53,16 +53,18 @@ export class VnpayService {
     vnp_Params['vnp_CreateDate'] = createDate;
     vnp_Params['vnp_BankCode'] = bankCode;
     vnp_Params = sortObject(vnp_Params);
-
     const signData = querystring.stringify(vnp_Params, { encode: true });
     const hmac = createHmac('sha512', secretKey);
     const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
-
     vnp_Params['vnp_SecureHash'] = signed;
     vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: true });
-
-    console.log(vnpUrl)
-
-    return signData
+    const callbackUrl = process.env.VN_PAY_CALLBACK_URL
+    return {
+      transaction: createDate,
+      txn_ref: orderId,
+      payment_url: vnpUrl,
+      callback_url: `${callbackUrl}?txn_ref=${orderId}`,
+      secure_hash: signed
+    }
   }
 }

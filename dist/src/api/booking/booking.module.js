@@ -17,6 +17,8 @@ const entities_3 = require("../account/entities");
 const entities_4 = require("../villa/entities");
 const entities_5 = require("../branches/entities");
 const services_1 = require("../../services");
+const entities_6 = require("../payment_method/entities");
+const entities_7 = require("../payment_gateway/entities");
 let BookingModule = class BookingModule {
 };
 BookingModule = __decorate([
@@ -26,7 +28,9 @@ BookingModule = __decorate([
                 entities_1.Booking,
                 entities_2.Customer,
                 entities_3.Account,
-                entities_4.Villa
+                entities_4.Villa,
+                entities_6.PaymentMethod,
+                entities_7.PaymentGateway
             ])],
         controllers: [
             booking_controller_1.BookingController,
