@@ -28,9 +28,10 @@ export class VnpayService {
   }: ICreatePayment) {
 
     const createDate = moment().format('YYYYMMDDHHmmss');
-    const ipAddr = req.headers['x-forwarded-for'] ||
-      req.connection.remoteAddress ||
-      req.socket.remoteAddress
+    // const ipAddr = req.headers['x-forwarded-for'] ||
+    //   req.connection.remoteAddress ||
+    //   req.socket.remoteAddress
+    const ipAddr = '::1'
     const tmnCode = process.env.VN_TMN_CODE;
     const secretKey = process.env.VN_SECRET_KEY
     let vnpUrl = process.env.VN_CREATE_PAY_URL

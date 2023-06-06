@@ -39,9 +39,10 @@ export class PaymentGatewayService {
     const vnp_Command = 'querydr';
     const vnp_OrderInfo = 'Truy van GD ma:' + vnp_TxnRef;
 
-    const vnp_IpAddr = req.headers['x-forwarded-for'] ||
-      req.connection.remoteAddress ||
-      req.socket.remoteAddress
+    // const vnp_IpAddr = req.headers['x-forwarded-for'] ||
+    //   req.connection.remoteAddress ||
+    //   req.socket.remoteAddress
+    const vnp_IpAddr = '::1'
     const currCode = 'VND';
     const vnp_CreateDate = moment(date).format('YYYYMMDDHHmmss');
     const data = vnp_RequestId + "|" + vnp_Version + "|" + vnp_Command + "|" + vnp_TmnCode + "|" + vnp_TxnRef + "|" + vnp_TransactionDate + "|" + vnp_CreateDate + "|" + vnp_IpAddr + "|" + vnp_OrderInfo;
