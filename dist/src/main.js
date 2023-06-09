@@ -18,6 +18,7 @@ async function bootstrap() {
         "preflightContinue": false,
         "credentials": true
     });
+    app.setViewEngine('hbs');
     app.useGlobalPipes(new common_1.ValidationPipe());
     app.useStaticAssets(__dirname + 'public');
     app.use(cookieParser());

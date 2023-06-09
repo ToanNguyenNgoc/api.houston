@@ -25,7 +25,11 @@ let AppService = class AppService {
     }
     async getHello() {
         await this.initial();
-        return `Web Api Houston's services ${moment().format('YYYY/MM/DD-HH')}`;
+        const time = moment().format('HH:mm [ngày] DD, [tháng] MM, YYYY');
+        const clientHost = process.env.CLIENT_HOST;
+        const serverHost = process.env.SERVER_HOST;
+        const mail = process.env.MAILER_ORIGINAL;
+        return { time, clientHost, serverHost, mail };
     }
     async initial() {
         const count = await this.roleRepository.count();

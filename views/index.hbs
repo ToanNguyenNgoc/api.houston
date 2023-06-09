@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Houston Garden's services</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+  <style>
+    a {
+      text-decoration: none;
+      color: var(--bs-gray-dark);
+    }
+
+    .shadow {
+      box-shadow: 0px 0px 16px -1px rgba(0, 0, 0, 0.1) !important;
+      ;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0px auto;
+      padding: 0px;
+    }
+
+    .header {
+      padding: 12px;
+      background-color: var(--bs-gray-dark);
+    }
+
+    .header-left {
+      color: var(--bs-white);
+      font-weight: 300;
+    }
+
+    .contact {
+      margin-top: 12px;
+      width: 100%;
+      background-color: var(--bs-white);
+      padding: 12px;
+      border-radius: 8px;
+    }
+
+    .contact_time {
+      color: var(--bs-gray);
+      font-size: 13px;
+      font-weight: 400;
+    }
+
+    .contact_email {
+      margin-top: 2px;
+    }
+
+    .contact_email a {
+      color: var(--bs-blue);
+    }
+
+    .service_cnt {
+      margin-top: 32px;
+      grid-gap: 12px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .service_card {
+      padding: 12px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .service_card_img {
+      width: 150px;
+      height: 150px;
+      border-radius: 8px;
+      background-color: var(--bs-light);
+      position: relative;
+    }
+
+    .service_card_img img {
+      position: absolute;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .service_card_title {
+      width: calc(100% - 162px);
+    }
+
+    .service_card_title {
+      font-size: 20px;
+      color: var(--bs-green);
+    }
+
+    @media only screen and (max-width: 767px) {
+      .service_cnt {
+        margin-top: 32px;
+        grid-gap: 12px;
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+      }
+      .service_card_img{
+        width: 120px;
+        height: 120px;
+      }
+      .service_card_title{
+        width: calc(100% - 132px);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="header-container">
+        <h5 class="header-left">
+          Houston Garden's services
+        </h5>
+      </div>
+    </div>
+  </header>
+  <div class="container">
+    <div class="contact shadow">
+      <div class="contact_time">{{time}}</div>
+      <div class="contact_email">
+        <a href="mailto:{{mail}}">
+          Contact me: {{mail}}
+        </a>
+      </div>
+    </div>
+    <div class="service_cnt">
+      <a href={{clientHost}} target="_blank" class="service_card shadow">
+        <div class="service_card_img">
+          <img src="https://admin.houstongarden.vn/uploads/Logo_2_37f74e1b6b.png" alt="">
+        </div>
+        <div class="service_card_title">Houston Garden</div>
+      </a>
+      <a href={{serverHost}} target="_blank" class="service_card shadow">
+        <div class="service_card_img">
+          <img src="https://api.houstongarden.click/uploads/7658037d030b40a-e4a1-4bb9-af1b-cdc07359594e.png" alt="">
+        </div>
+        <div class="service_card_title">API Documents</div>
+      </a>
+    </div>
+  </div>
+  </div>
+</body>
+
+</html>

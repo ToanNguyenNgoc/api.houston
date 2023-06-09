@@ -3,6 +3,11 @@ import { Repository } from 'typeorm';
 export declare class AppService {
     private readonly roleRepository;
     constructor(roleRepository: Repository<Role>);
-    getHello(): Promise<string>;
+    getHello(): Promise<{
+        time: string;
+        clientHost: string;
+        serverHost: string;
+        mail: string;
+    }>;
     initial(): Promise<void>;
 }
