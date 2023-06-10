@@ -20,7 +20,7 @@ export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
       entities: [__dirname + '/../**/*.entity.{js,ts}'],
       migrations: ['dist/db/migrations/*.js'],
       synchronize: true,
-      timezone: 'z'
+      timezone: process.env.TIME_ZONE_UTC_DB
     };
   },
 };
