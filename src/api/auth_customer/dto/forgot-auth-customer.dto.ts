@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail } from "class-validator";
+import { IsEmail, IsNotEmpty } from "class-validator";
 
 export class ForgotAuthCustomer{
   @ApiProperty()
@@ -10,5 +10,6 @@ export class ForgotAuthCustomer{
   @ApiProperty()
   new_password:string
   @ApiProperty()
+  @IsNotEmpty()
   recaptcha:string;
 }

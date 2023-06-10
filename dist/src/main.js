@@ -8,6 +8,7 @@ const swagger_2 = require("./swagger");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const passport = require("passport");
+const path_1 = require("path");
 async function bootstrap() {
     var _a;
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
@@ -21,6 +22,7 @@ async function bootstrap() {
     app.setViewEngine('hbs');
     app.useGlobalPipes(new common_1.ValidationPipe());
     app.useStaticAssets(__dirname + 'public');
+    app.useStaticAssets((0, path_1.join)(__dirname, '..', 'public'));
     app.use(cookieParser());
     app.use(session({
         secret: 'asiodasjoddjdoasddasoidjasiodasdjaiodd',

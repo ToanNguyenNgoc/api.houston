@@ -18,6 +18,7 @@ exports.typeOrmAsyncConfig = {
             entities: [__dirname + '/../**/*.entity.{js,ts}'],
             migrations: ['dist/db/migrations/*.js'],
             synchronize: true,
+            timezone: 'z'
         };
     },
 };
@@ -29,6 +30,7 @@ const typeOrmConfig = {
     database: process.env.TYPEORM_DATABASE,
     password: process.env.TYPEORM_PASSWORD,
     synchronize: true,
+    timezone: 'Z'
 };
 const dataSource = new typeorm_1.DataSource(typeOrmConfig);
 exports.default = dataSource;

@@ -173,7 +173,7 @@ let BookingService = class BookingService {
                 .where({ id: req.user.id, email: req.user.email })
                 .getOne();
             const nights = (0, utils_1.rangeDate)(body.from_date_booking, body.to_date_booking);
-            if (nights < 0)
+            if (nights <= 0)
                 throw new common_1.BadRequestException('Date to is invalid');
             if (!customer)
                 throw new common_1.UnauthorizedException();

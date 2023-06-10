@@ -43,7 +43,7 @@ export class AuthCustomerController {
   ) {
     return this.authCustomerService.refreshToken(req, res)
   }
-  @Recaptcha({ response: req => req.body.recaptcha, action: 'FORGOT_CUSTOMER', score: 0.8 })
+  // @Recaptcha({ response: req => req.body.recaptcha, action: 'FORGOT_CUSTOMER', score: 0.8 })
   @Post('forgot')
   forgot(@Body() body: ForgotAuthCustomer) {
     return this.authCustomerService.forgot(body)

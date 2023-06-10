@@ -29,6 +29,7 @@ __decorate([
 ], ForgotAuthCustomer.prototype, "new_password", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], ForgotAuthCustomer.prototype, "recaptcha", void 0);
 exports.ForgotAuthCustomer = ForgotAuthCustomer;

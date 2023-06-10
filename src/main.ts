@@ -7,6 +7,7 @@ import { customOptions, options } from './swagger';
 import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session';
 import * as passport from 'passport'
+import { join } from 'path';
 
 
 async function bootstrap() {
@@ -21,6 +22,7 @@ async function bootstrap() {
   app.setViewEngine('hbs')
   app.useGlobalPipes(new ValidationPipe())
   app.useStaticAssets(__dirname + 'public');
+  app.useStaticAssets(join(__dirname, '..', 'public'))
   app.use(cookieParser())
   app.use(
     session({

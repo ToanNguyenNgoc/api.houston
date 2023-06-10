@@ -201,7 +201,7 @@ export class BookingService {
         .where({ id: req.user.id, email: req.user.email })
         .getOne()
       const nights = rangeDate(body.from_date_booking, body.to_date_booking)
-      if (nights < 0) throw new BadRequestException('Date to is invalid')
+      if (nights <= 0) throw new BadRequestException('Date to is invalid')
       if (!customer) throw new UnauthorizedException()
       const branch = await this.branchRe.createQueryBuilder('tb_branch')
         .where({ id: body.branch_id, deleted: false }).getOne()

@@ -19,7 +19,6 @@ const auth_customer_service_1 = require("./auth-customer.service");
 const dto_1 = require("./dto");
 const guards_1 = require("../../middlewares/guards");
 const common_2 = require("../../common");
-const google_recaptcha_1 = require("@nestlab/google-recaptcha");
 let AuthCustomerController = class AuthCustomerController {
     constructor(authCustomerService) {
         this.authCustomerService = authCustomerService;
@@ -80,7 +79,6 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AuthCustomerController.prototype, "refreshToken", null);
 __decorate([
-    (0, google_recaptcha_1.Recaptcha)({ response: req => req.body.recaptcha, action: 'FORGOT_CUSTOMER', score: 0.8 }),
     (0, common_1.Post)('forgot'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),

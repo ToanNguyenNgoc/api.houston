@@ -20,7 +20,7 @@ export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
       entities: [__dirname + '/../**/*.entity.{js,ts}'],
       migrations: ['dist/db/migrations/*.js'],
       synchronize: true,
-      // timezone: 'z'
+      timezone: 'z'
     };
   },
 };
@@ -33,7 +33,7 @@ const typeOrmConfig: TypeOrmModuleOptions = {
   database: process.env.TYPEORM_DATABASE,
   password: process.env.TYPEORM_PASSWORD,
   synchronize: true,
-  // timezone: 'Z'
+  timezone: 'Z'
 };
 const dataSource = new DataSource(typeOrmConfig as DataSourceOptions)
 export default dataSource
