@@ -13,10 +13,9 @@ export class GoogleStrategy extends PassportStrategy(Strategy, name.GOOGLE_OAUTH
     private readonly customerRep:Repository<Customer>
   ) {
     super({
-      clientID: '433603162729-lmpo28268ebcs22baqiqnelp74a83qea.apps.googleusercontent.com',
-      clientSecret: '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',
-      callbackURL: 'http://localhost:3003/customers/auth/google/redirect',
-      // callbackURL: 'https://houstongarden.click',
+      clientID: process.env.OAUTH_CLIENT_ID,
+      clientSecret: process.env.OAUTH_CLIENT_SECRET,
+      callbackURL: process.env.OAUTH_CALLBACK_URL,
       scope: ['profile', 'email']
     })
   }

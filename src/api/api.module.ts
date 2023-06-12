@@ -26,14 +26,14 @@ import { VillaCateModule } from 'src/api/villa_cate/villa_cate.module';
 import { VillaGalleryModule } from 'src/api/villa_gallery/villagallery.module';
 import { VillaRoomModule } from 'src/api/villa_room/villaroom.module';
 import { OAuthModule } from 'src/api/oauth/oauth.module';
-import { GoogleStrategy, JwtCookieStrategy, JwtRefreshStrategy, JwtSysStrategy } from 'src/middlewares/strategy';
+import { FacebookStrategy, GoogleStrategy, JwtCookieStrategy, JwtRefreshStrategy, JwtSysStrategy } from 'src/middlewares/strategy';
 import { SessionSerializer } from 'src/middlewares/serializer';
 import { PaymentGatewayModule } from 'src/api/payment_gateway/paymentgateway.module';
 import { PaymentMethodModule } from './payment_method/payment_method.module';
 
 @Module({
     imports: [
-        // OAuthModule,
+        OAuthModule,
         PermissionModule,
         RoleModule,
         AccountModule,
@@ -72,6 +72,7 @@ import { PaymentMethodModule } from './payment_method/payment_method.module';
         JwtCookieStrategy,
         JwtRefreshStrategy,
         GoogleStrategy,
+        FacebookStrategy,
         SessionSerializer
     ],
 })

@@ -9,7 +9,8 @@ export const name = {
   JWT_REFRESH: 'json_web_token_refresh',
   AGE_TOKEN: 60 * 1000 * 2,
   AGE_RE_TOKEN: onHours * 24 * 30,
-  GOOGLE_OAUTH_2: 'google_oauth_2'
+  GOOGLE_OAUTH_2: 'google_oauth_2',
+  FACEBOOK_AUTH: 'facebook_auth'
 }
 export const key = {
   SUPER_ADMIN: 'Super Admin',

@@ -7,6 +7,7 @@ export declare const name: {
     AGE_TOKEN: number;
     AGE_RE_TOKEN: number;
     GOOGLE_OAUTH_2: string;
+    FACEBOOK_AUTH: string;
 };
 export declare const key: {
     SUPER_ADMIN: string;

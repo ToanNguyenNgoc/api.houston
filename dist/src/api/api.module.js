@@ -34,6 +34,7 @@ const villa_module_1 = require("./villa/villa.module");
 const villa_cate_module_1 = require("./villa_cate/villa_cate.module");
 const villagallery_module_1 = require("./villa_gallery/villagallery.module");
 const villaroom_module_1 = require("./villa_room/villaroom.module");
+const oauth_module_1 = require("./oauth/oauth.module");
 const strategy_1 = require("../middlewares/strategy");
 const serializer_1 = require("../middlewares/serializer");
 const paymentgateway_module_1 = require("./payment_gateway/paymentgateway.module");
@@ -43,6 +44,7 @@ let ApiModule = class ApiModule {
 ApiModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            oauth_module_1.OAuthModule,
             permission_module_1.PermissionModule,
             role_module_1.RoleModule,
             account_module_1.AccountModule,
@@ -77,6 +79,7 @@ ApiModule = __decorate([
             strategy_1.JwtCookieStrategy,
             strategy_1.JwtRefreshStrategy,
             strategy_1.GoogleStrategy,
+            strategy_1.FacebookStrategy,
             serializer_1.SessionSerializer
         ],
     })

@@ -20,4 +20,5 @@ __exportStar(require("./api-header.guard"), exports);
 __exportStar(require("./jwt-cookie.guard"), exports);
 __exportStar(require("./jwt-refresh.guard"), exports);
 __exportStar(require("./oauth.guard"), exports);
+__exportStar(require("./facebook-auth.guard"), exports);
 //# sourceMappingURL=index.js.map

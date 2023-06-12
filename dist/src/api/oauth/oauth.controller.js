@@ -18,10 +18,15 @@ const swagger_1 = require("@nestjs/swagger");
 const guards_1 = require("../../middlewares/guards");
 let OAuthController = class OAuthController {
     onSignInGoogle() {
-        return;
+        return { data: {} };
     }
     onRedirect(req) {
-        console.log(req.user);
+        return req.user;
+    }
+    onSignFacebook() {
+        return { data: {} };
+    }
+    onFaceRedirect(req) {
         return req.user;
     }
 };
@@ -33,6 +38,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], OAuthController.prototype, "onSignInGoogle", null);
 __decorate([
+    (0, swagger_1.ApiExcludeEndpoint)(),
     (0, common_1.UseGuards)(guards_1.OAuthGuard),
     (0, common_1.Get)('google/redirect'),
     __param(0, (0, common_1.Req)()),
@@ -40,6 +46,22 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], OAuthController.prototype, "onRedirect", null);
+__decorate([
+    (0, common_1.Get)('facebook/login'),
+    (0, common_1.UseGuards)(guards_1.FacebookAuthGuard),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], OAuthController.prototype, "onSignFacebook", null);
+__decorate([
+    (0, swagger_1.ApiExcludeEndpoint)(),
+    (0, common_1.UseGuards)(guards_1.FacebookAuthGuard),
+    (0, common_1.Get)('facebook/redirect'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], OAuthController.prototype, "onFaceRedirect", null);
 OAuthController = __decorate([
     (0, swagger_1.ApiSecurity)('x-api-key'),
     (0, swagger_1.ApiTags)('customers'),

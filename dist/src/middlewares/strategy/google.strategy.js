@@ -23,9 +23,9 @@ const typeorm_2 = require("typeorm");
 let GoogleStrategy = class GoogleStrategy extends (0, passport_1.PassportStrategy)(passport_google_oauth20_1.Strategy, common_2.name.GOOGLE_OAUTH_2) {
     constructor(customerRep) {
         super({
-            clientID: '433603162729-lmpo28268ebcs22baqiqnelp74a83qea.apps.googleusercontent.com',
-            clientSecret: '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',
-            callbackURL: 'http://localhost:3003/customers/auth/google/redirect',
+            clientID: process.env.OAUTH_CLIENT_ID,
+            clientSecret: process.env.OAUTH_CLIENT_SECRET,
+            callbackURL: process.env.OAUTH_CALLBACK_URL,
             scope: ['profile', 'email']
         });
         this.customerRep = customerRep;

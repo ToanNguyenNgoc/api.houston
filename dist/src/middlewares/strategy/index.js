@@ -19,4 +19,5 @@ __exportStar(require("./api-key.strategy"), exports);
 __exportStar(require("./jwt-cookie.strategy"), exports);
 __exportStar(require("./jwt-refresh.strategy"), exports);
 __exportStar(require("./google.strategy"), exports);
+__exportStar(require("./facebook.strategy"), exports);
 //# sourceMappingURL=index.js.map
