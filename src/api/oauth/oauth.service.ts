@@ -15,6 +15,7 @@ export class OauthService {
   ) { }
   async onGoogleRedirect(req: Request, res: Response) {
     const cbHomeUrl = process.env.OAUTH_CALLBACK_HOME
+    const clientDomain = process.env.CLIENT_DOMAIN
     try {
       const user = req.user as Customer
       const { token, token_expired_at } = await this.gTokenService.generateToken(user.id, user.email)
@@ -23,14 +24,19 @@ export class OauthService {
         httpOnly: true,
         secure: true,
         sameSite: 'lax',
+        domain: clientDomain,
         maxAge: name.AGE_RE_TOKEN
       })
         .cookie('token_expired_at', token_expired_at, {
           secure: true,
+          domain: clientDomain,
+          sameSite: 'lax',
           maxAge: name.AGE_RE_TOKEN
         })
         .cookie('access_token', token, {
           secure: true,
+          domain: clientDomain,
+          sameSite: 'lax',
           maxAge: name.AGE_RE_TOKEN
         }).redirect(cbHomeUrl)
     } catch (error) {
