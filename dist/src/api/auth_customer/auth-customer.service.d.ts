@@ -55,6 +55,9 @@ export declare class AuthCustomerService {
             updated_at: Date;
             bookings: import("../booking/entities").Booking[];
             email_transfer: string;
+            social_platform: string;
+            social_id: string;
+            social_avatar: string;
         };
     }>;
     forgot(body: ForgotAuthCustomer): Promise<{

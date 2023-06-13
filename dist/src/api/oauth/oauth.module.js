@@ -7,15 +7,20 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OAuthModule = void 0;
+const oauth_service_1 = require("./oauth.service");
 const common_1 = require("@nestjs/common");
+const jwt_1 = require("@nestjs/jwt");
+const typeorm_1 = require("@nestjs/typeorm");
+const entities_1 = require("../customer/entities");
 const oauth_controller_1 = require("./oauth.controller");
+const services_1 = require("../../services");
 let OAuthModule = class OAuthModule {
 };
 OAuthModule = __decorate([
     (0, common_1.Module)({
-        imports: [],
+        imports: [jwt_1.JwtModule, typeorm_1.TypeOrmModule.forFeature([entities_1.Customer])],
         controllers: [oauth_controller_1.OAuthController],
-        providers: [],
+        providers: [oauth_service_1.OauthService, services_1.GenerateToken],
     })
 ], OAuthModule);
 exports.OAuthModule = OAuthModule;

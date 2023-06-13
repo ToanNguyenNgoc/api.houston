@@ -72,4 +72,13 @@ export class Customer {
 
   @Column()
   email_transfer: string
+
+  @Column({nullable:true})
+  social_platform:string
+
+  @Column({nullable:true})
+  social_id:string
+
+  @Column({nullable:true})
+  social_avatar:string
 }

@@ -93,6 +93,18 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Customer.prototype, "email_transfer", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Customer.prototype, "social_platform", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Customer.prototype, "social_id", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Customer.prototype, "social_avatar", void 0);
 Customer = __decorate([
     (0, typeorm_1.Entity)({ name: 'tb_customer' })
 ], Customer);

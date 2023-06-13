@@ -16,12 +16,16 @@ exports.OAuthController = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const guards_1 = require("../../middlewares/guards");
+const oauth_service_1 = require("./oauth.service");
 let OAuthController = class OAuthController {
+    constructor(oauthService) {
+        this.oauthService = oauthService;
+    }
     onSignInGoogle() {
         return { data: {} };
     }
-    onRedirect(req) {
-        return req.user;
+    async onRedirect(req, res) {
+        return this.oauthService.onGoogleRedirect(req, res);
     }
     onSignFacebook() {
         return { data: {} };
@@ -42,9 +46,10 @@ __decorate([
     (0, common_1.UseGuards)(guards_1.OAuthGuard),
     (0, common_1.Get)('google/redirect'),
     __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
 ], OAuthController.prototype, "onRedirect", null);
 __decorate([
     (0, common_1.Get)('facebook/login'),
@@ -65,7 +70,8 @@ __decorate([
 OAuthController = __decorate([
     (0, swagger_1.ApiSecurity)('x-api-key'),
     (0, swagger_1.ApiTags)('customers'),
-    (0, common_1.Controller)('customers/auth')
+    (0, common_1.Controller)('customers/auth'),
+    __metadata("design:paramtypes", [oauth_service_1.OauthService])
 ], OAuthController);
 exports.OAuthController = OAuthController;
 //# sourceMappingURL=oauth.controller.js.map

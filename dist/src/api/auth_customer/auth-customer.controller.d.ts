@@ -47,6 +47,9 @@ export declare class AuthCustomerController {
             updated_at: Date;
             bookings: import("../booking/entities").Booking[];
             email_transfer: string;
+            social_platform: string;
+            social_id: string;
+            social_avatar: string;
         };
     }>;
 }

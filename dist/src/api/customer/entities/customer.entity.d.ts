@@ -21,4 +21,7 @@ export declare class Customer {
     updated_at: Date;
     bookings: Booking[];
     email_transfer: string;
+    social_platform: string;
+    social_id: string;
+    social_avatar: string;
 }

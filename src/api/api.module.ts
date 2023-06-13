@@ -30,6 +30,7 @@ import { FacebookStrategy, GoogleStrategy, JwtCookieStrategy, JwtRefreshStrategy
 import { SessionSerializer } from 'src/middlewares/serializer';
 import { PaymentGatewayModule } from 'src/api/payment_gateway/paymentgateway.module';
 import { PaymentMethodModule } from './payment_method/payment_method.module';
+import { SendMailService } from 'src/services';
 
 @Module({
     imports: [
@@ -68,6 +69,7 @@ import { PaymentMethodModule } from './payment_method/payment_method.module';
     ],
     controllers: [],
     providers: [
+        SendMailService,
         JwtSysStrategy,
         JwtCookieStrategy,
         JwtRefreshStrategy,

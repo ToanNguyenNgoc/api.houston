@@ -39,6 +39,7 @@ const strategy_1 = require("../middlewares/strategy");
 const serializer_1 = require("../middlewares/serializer");
 const paymentgateway_module_1 = require("./payment_gateway/paymentgateway.module");
 const payment_method_module_1 = require("./payment_method/payment_method.module");
+const services_1 = require("../services");
 let ApiModule = class ApiModule {
 };
 ApiModule = __decorate([
@@ -75,6 +76,7 @@ ApiModule = __decorate([
         ],
         controllers: [],
         providers: [
+            services_1.SendMailService,
             strategy_1.JwtSysStrategy,
             strategy_1.JwtCookieStrategy,
             strategy_1.JwtRefreshStrategy,

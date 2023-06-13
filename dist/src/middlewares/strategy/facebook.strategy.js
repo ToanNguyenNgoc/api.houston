@@ -20,7 +20,7 @@ let FacebookStrategy = class FacebookStrategy extends (0, passport_1.PassportStr
             clientID: process.env.FB_AUTH_CLIENT_ID,
             clientSecret: process.env.FB_AUTH_SECRET,
             callbackURL: process.env.FB_AUTH_CALLBACK_URL,
-            profileFields: ['id', 'email', 'displayName', 'photos']
+            profileFields: ['id', 'emails', 'displayName', 'photos']
         });
     }
     async validate(accessToken, refreshToken, profile, done) {

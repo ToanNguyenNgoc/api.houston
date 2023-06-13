@@ -20,8 +20,10 @@ const common_2 = require("../../common");
 const typeorm_1 = require("@nestjs/typeorm");
 const entities_1 = require("../../api/customer/entities");
 const typeorm_2 = require("typeorm");
+const utils_1 = require("../../utils");
+const services_1 = require("../../services");
 let GoogleStrategy = class GoogleStrategy extends (0, passport_1.PassportStrategy)(passport_google_oauth20_1.Strategy, common_2.name.GOOGLE_OAUTH_2) {
-    constructor(customerRep) {
+    constructor(customerRep, sendmailService) {
         super({
             clientID: process.env.OAUTH_CLIENT_ID,
             clientSecret: process.env.OAUTH_CLIENT_SECRET,
@@ -29,15 +31,45 @@ let GoogleStrategy = class GoogleStrategy extends (0, passport_1.PassportStrateg
             scope: ['profile', 'email']
         });
         this.customerRep = customerRep;
+        this.sendmailService = sendmailService;
     }
     async validate(accessToken, refreshToken, profile) {
-        return profile;
+        var _a;
+        const customer = await this.customerRep
+            .createQueryBuilder('tb_customer')
+            .where({ email: profile._json.email })
+            .getOne();
+        if (customer) {
+            return customer;
+        }
+        else {
+            const newCustomer = new entities_1.Customer();
+            newCustomer.fullname = profile.displayName;
+            newCustomer.password = await (0, utils_1.generatePassword)(profile.id);
+            newCustomer.email = profile._json.email;
+            newCustomer.email_transfer = profile._json.email;
+            newCustomer.social_id = `G${profile.id}`;
+            newCustomer.social_platform = "GOOGLE";
+            newCustomer.social_avatar = profile.photos ? (_a = profile.photos[0]) === null || _a === void 0 ? void 0 : _a.value : null;
+            const customerCreated = await this.customerRep.save(newCustomer);
+            await this.sendmailService.onSendMail({
+                template: 'welcome',
+                to: profile._json.email,
+                context: {
+                    data: {
+                        fullname: profile.displayName,
+                    }
+                }
+            });
+            return customerCreated;
+        }
     }
 };
 GoogleStrategy = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(entities_1.Customer)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        services_1.SendMailService])
 ], GoogleStrategy);
 exports.GoogleStrategy = GoogleStrategy;
 //# sourceMappingURL=google.strategy.js.map
