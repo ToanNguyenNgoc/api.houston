@@ -15,7 +15,7 @@ export declare class AuthCustomerController {
         message?: undefined;
     }>;
     login(req: Request, body: LoginAuthCusDTO, res: Response): Promise<void>;
-    logout(req: Request, res: Response): void;
+    logout(req: Request, res: Response): Promise<void>;
     refreshToken(req: RequestHeader<Account>, res: Response): Promise<void>;
     forgot(body: ForgotAuthCustomer): Promise<{
         message: string;

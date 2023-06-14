@@ -32,7 +32,7 @@ export class AuthCustomerController {
   }
   @Post('logout')
   logout(@Req() req: Request, @Res() res: Response) {
-    res.clearCookie('access_token').send({ message: 'Logout success!' })
+    return this.authCustomerService.logout(res)
   }
   @Post('refresh_token')
   @UseGuards(JwtRefreshGuard)

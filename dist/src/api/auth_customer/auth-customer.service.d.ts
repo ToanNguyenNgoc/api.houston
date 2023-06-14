@@ -64,4 +64,5 @@ export declare class AuthCustomerService {
         message: string;
     }>;
     removeOtp(email: string, code: string): Promise<void>;
+    logout(res: Response): Promise<void>;
 }

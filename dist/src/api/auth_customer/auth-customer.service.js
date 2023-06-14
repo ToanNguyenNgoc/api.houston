@@ -294,6 +294,25 @@ let AuthCustomerService = class AuthCustomerService {
             .where({ email: email, code: code })
             .execute();
     }
+    async logout(res) {
+        const clientDomain = process.env.CLIENT_DOMAIN;
+        res.clearCookie('refresh_token', {
+            secure: true,
+            sameSite: 'lax',
+            domain: clientDomain,
+        })
+            .clearCookie('token_expired_at', {
+            secure: true,
+            domain: clientDomain,
+            sameSite: 'lax',
+        })
+            .clearCookie('access_token', {
+            secure: true,
+            domain: clientDomain,
+            sameSite: 'lax',
+        })
+            .send({ message: 'Logout success!' });
+    }
 };
 AuthCustomerService = __decorate([
     (0, common_1.Injectable)(),

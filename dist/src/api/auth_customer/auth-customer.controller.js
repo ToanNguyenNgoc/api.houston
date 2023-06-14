@@ -30,7 +30,7 @@ let AuthCustomerController = class AuthCustomerController {
         return this.authCustomerService.login(req, body, res);
     }
     logout(req, res) {
-        res.clearCookie('access_token').send({ message: 'Logout success!' });
+        return this.authCustomerService.logout(res);
     }
     refreshToken(req, res) {
         return this.authCustomerService.refreshToken(req, res);
