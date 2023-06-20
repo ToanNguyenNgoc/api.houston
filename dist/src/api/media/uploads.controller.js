@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UploadsController = void 0;
 const common_1 = require("@nestjs/common");
+const swagger_1 = require("@nestjs/swagger");
 const path_1 = require("path");
 const rxjs_1 = require("rxjs");
 let UploadsController = class UploadsController {
@@ -30,6 +31,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UploadsController.prototype, "getImageByName", null);
 UploadsController = __decorate([
+    (0, swagger_1.ApiExcludeController)(),
     (0, common_1.Controller)('uploads')
 ], UploadsController);
 exports.UploadsController = UploadsController;

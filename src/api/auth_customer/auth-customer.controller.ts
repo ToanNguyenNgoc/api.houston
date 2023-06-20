@@ -4,17 +4,14 @@ import { AuthCustomerService } from './auth-customer.service';
 import {
   ForgotAuthCustomer,
   LoginAuthCusDTO,
-  RefreshTokenDTO,
   RegisterAuthCustomerDTO,
   UpdateAuthCustomerDto
 } from './dto';
 import { Customer } from '../customer/entities';
 import { Request, Response } from 'express';
-import { JwtCookieGuard, JwtRefreshGuard, JwtSysGuard } from '../../middlewares/guards';
+import { JwtRefreshGuard, JwtSysGuard } from '../../middlewares/guards';
 import { RequestHeader } from '../../interface';
 import { name } from '../../common';
-import { Recaptcha } from '@nestlab/google-recaptcha';
-import { AuthGuard } from '@nestjs/passport';
 import { Account } from 'src/api/account/entities';
 
 @ApiSecurity('x-api-key')
