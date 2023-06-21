@@ -40,6 +40,8 @@ const serializer_1 = require("../middlewares/serializer");
 const paymentgateway_module_1 = require("./payment_gateway/paymentgateway.module");
 const payment_method_module_1 = require("./payment_method/payment_method.module");
 const services_1 = require("../services");
+const food_module_1 = require("./food/food.module");
+const food_cate_module_1 = require("./food_cate/food_cate.module");
 let ApiModule = class ApiModule {
 };
 ApiModule = __decorate([
@@ -73,6 +75,8 @@ ApiModule = __decorate([
             paymentgateway_module_1.PaymentGatewayModule,
             company_module_1.CompanyModule,
             payment_method_module_1.PaymentMethodModule,
+            food_module_1.FoodModule,
+            food_cate_module_1.FoodCateModule,
         ],
         controllers: [],
         providers: [

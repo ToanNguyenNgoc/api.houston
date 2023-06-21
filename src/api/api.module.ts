@@ -31,6 +31,8 @@ import { SessionSerializer } from 'src/middlewares/serializer';
 import { PaymentGatewayModule } from 'src/api/payment_gateway/paymentgateway.module';
 import { PaymentMethodModule } from './payment_method/payment_method.module';
 import { SendMailService } from 'src/services';
+import { FoodModule } from './food/food.module';
+import { FoodCateModule } from './food_cate/food_cate.module';
 
 @Module({
     imports: [
@@ -63,6 +65,8 @@ import { SendMailService } from 'src/services';
         //
         CompanyModule,
         PaymentMethodModule,
+        FoodModule,
+        FoodCateModule,
         // CompanySocialModule,
         // CompanyContactModule,
         // BlogModule

@@ -15,6 +15,8 @@ import { VillaCate } from '../../villa_cate/entities';
 import { Villa } from '../../villa/entities';
 import { District, Province, Ward } from '../../province/entities';
 import { Booking } from '../../booking/entities';
+import { FoodCate } from 'src/api/food_cate/entities';
+import { Food } from 'src/api/food/entities';
 
 @Entity({ name: 'tb_branch' })
 export class Branch {
@@ -28,11 +30,11 @@ export class Branch {
   @JoinColumn()
   image: Media
 
-  @Column({nullable:true, length:1000})
-  content:string;
+  @Column({ nullable: true, length: 1000 })
+  content: string;
 
-  @Column({nullable:true, length:9500})
-  description:string;
+  @Column({ nullable: true, length: 9500 })
+  description: string;
 
   @Column({ default: true })
   status: boolean
@@ -75,4 +77,10 @@ export class Branch {
 
   @OneToMany(() => Booking, (booking) => booking.branch)
   bookings: Booking[]
+
+  @OneToMany(() => FoodCate, (foodCate) => foodCate.branch)
+  food_cates: FoodCate[]
+
+  @OneToMany(() => Food, (food) => food.branch)
+  foods: Food[]
 }

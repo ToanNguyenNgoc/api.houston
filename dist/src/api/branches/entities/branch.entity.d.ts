@@ -4,6 +4,8 @@ import { VillaCate } from '../../villa_cate/entities';
 import { Villa } from '../../villa/entities';
 import { District, Province, Ward } from '../../province/entities';
 import { Booking } from '../../booking/entities';
+import { FoodCate } from 'src/api/food_cate/entities';
+import { Food } from 'src/api/food/entities';
 export declare class Branch {
     id: number;
     name: string;
@@ -24,4 +26,6 @@ export declare class Branch {
     latitude: string;
     longitude: string;
     bookings: Booking[];
+    food_cates: FoodCate[];
+    foods: Food[];
 }

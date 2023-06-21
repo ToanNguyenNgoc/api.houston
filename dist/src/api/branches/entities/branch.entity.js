@@ -17,6 +17,8 @@ const entities_3 = require("../../villa_cate/entities");
 const entities_4 = require("../../villa/entities");
 const entities_5 = require("../../province/entities");
 const entities_6 = require("../../booking/entities");
+const entities_7 = require("../../food_cate/entities");
+const entities_8 = require("../../food/entities");
 let Branch = class Branch {
 };
 __decorate([
@@ -96,6 +98,14 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => entities_6.Booking, (booking) => booking.branch),
     __metadata("design:type", Array)
 ], Branch.prototype, "bookings", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => entities_7.FoodCate, (foodCate) => foodCate.branch),
+    __metadata("design:type", Array)
+], Branch.prototype, "food_cates", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => entities_8.Food, (food) => food.branch),
+    __metadata("design:type", Array)
+], Branch.prototype, "foods", void 0);
 Branch = __decorate([
     (0, typeorm_1.Entity)({ name: 'tb_branch' })
 ], Branch);
