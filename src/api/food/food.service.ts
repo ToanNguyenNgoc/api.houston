@@ -60,7 +60,8 @@ export class FoodService {
       const status = convertBoolean(qr.status)
       const qb = this.foodRep.createQueryBuilder('tb_food').where({ deleted: false })
         .leftJoin('tb_food.media', 'tb_media').addSelect(['tb_media.original_url'])
-        .leftJoinAndSelect('tb_food.branch', 'tb_branch')
+        .leftJoin('tb_food.branch', 'tb_branch')
+        .addSelect(['tb_branch.id','tb_branch.name'])
         .leftJoinAndSelect('tb_food.food_cate', 'tb_food_cate')
       if (qr.search) {
         qb.andWhere(

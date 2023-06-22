@@ -42,7 +42,9 @@ export class FoodCateService {
       const status = convertBoolean(qr.status)
       const qb = this.foodCateRep.createQueryBuilder('tb_food_cate')
         .where({ deleted: false })
-        .leftJoinAndSelect('tb_food_cate.branch', 'tb_branch')
+        .leftJoin('tb_food_cate.branch', 'tb_branch')
+        .addSelect(['tb_branch.id', 'tb_branch.name'])
+        .leftJoin('tb_branch.image', 'tb_media').addSelect(['tb_media.original_url'])
       if (qr.branch_id) {
         qb.andWhere(
           new Brackets((q) => q.where('tb_branch.id =:branch_id', { branch_id: qr.branch_id }))
@@ -67,6 +69,7 @@ export class FoodCateService {
       const response = await this.foodCateRep.createQueryBuilder('tb_food_cate')
         .where({ id: id, deleted: false })
         .leftJoinAndSelect('tb_food_cate.branch', 'tb.branch')
+        .leftJoinAndSelect('tb_branch.image', 'tb_media')
         .getOne()
       if (!response) throw new NotFoundException('Cannot found')
       return { data: response }
