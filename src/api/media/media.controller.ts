@@ -18,12 +18,12 @@ import { validatorsFile } from '../../config'
 @ApiSecurity('x-api-key')
 @Controller('media')
 @ApiTags('media')
-@UseGuards(JwtSysGuard)
-@ApiBearerAuth(name.JWT)
 export class MediaController {
   constructor(
     private readonly mediaService: MediaService,
   ) { }
+  @UseGuards(JwtSysGuard)
+  @ApiBearerAuth(name.JWT)
   @Post()
   @ApiOkResponse({ description: 'Upload image' })
   @ApiConsumes('multipart/form-data')

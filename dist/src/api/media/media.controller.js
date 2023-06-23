@@ -35,6 +35,8 @@ let MediaController = class MediaController {
     }
 };
 __decorate([
+    (0, common_1.UseGuards)(guards_1.JwtSysGuard),
+    (0, swagger_1.ApiBearerAuth)(common_2.name.JWT),
     (0, common_1.Post)(),
     (0, swagger_1.ApiOkResponse)({ description: 'Upload image' }),
     (0, swagger_1.ApiConsumes)('multipart/form-data'),
@@ -89,8 +91,6 @@ MediaController = __decorate([
     (0, swagger_1.ApiSecurity)('x-api-key'),
     (0, common_1.Controller)('media'),
     (0, swagger_1.ApiTags)('media'),
-    (0, common_1.UseGuards)(guards_1.JwtSysGuard),
-    (0, swagger_1.ApiBearerAuth)(common_2.name.JWT),
     __metadata("design:paramtypes", [media_service_1.MediaService])
 ], MediaController);
 exports.MediaController = MediaController;

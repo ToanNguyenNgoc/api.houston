@@ -73,8 +73,9 @@ let FoodCateService = class FoodCateService {
         try {
             const response = await this.foodCateRep.createQueryBuilder('tb_food_cate')
                 .where({ id: id, deleted: false })
-                .leftJoinAndSelect('tb_food_cate.branch', 'tb.branch')
-                .leftJoinAndSelect('tb_branch.image', 'tb_media')
+                .leftJoinAndSelect('tb_food_cate.branch', 'tb_branch')
+                .leftJoin('tb_branch.image', 'tb_media')
+                .addSelect(['tb_media.id', 'tb_media.original_url'])
                 .getOne();
             if (!response)
                 throw new common_1.NotFoundException('Cannot found');

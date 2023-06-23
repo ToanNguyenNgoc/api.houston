@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards, Req, Query 
 import { FoodCateService } from './food_cate.service';
 import { CreateFoodCateDto } from './dto/create-food_cate.dto';
 import { UpdateFoodCateDto } from './dto/update-food_cate.dto';
-import { ApiBearerAuth, ApiExcludeEndpoint, ApiSecurity, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { JwtSysGuard, RoleGuard } from 'src/middlewares/guards';
 import { RequestHeader } from 'src/interface';
 import { Account } from 'src/api/account/entities';
@@ -29,7 +29,6 @@ export class FoodCateController {
   }
 
   @Get(':id')
-  @ApiExcludeEndpoint()
   findOne(@Param('id') id: string) {
     return this.foodCateService.findOne(id);
   }
