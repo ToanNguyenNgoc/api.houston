@@ -1,11 +1,13 @@
 import { District, Province, Ward } from './entities';
 import { Repository } from 'typeorm';
 import { QueryMapDTO } from './dto';
+import { RedisCacheService } from 'src/redis';
 export declare class ProvinceService {
     private readonly provinceRe;
     private readonly districtRe;
     private readonly wardRe;
-    constructor(provinceRe: Repository<Province>, districtRe: Repository<District>, wardRe: Repository<Ward>);
+    private readonly cache;
+    constructor(provinceRe: Repository<Province>, districtRe: Repository<District>, wardRe: Repository<Ward>, cache: RedisCacheService);
     findAll(): Promise<{
         data: any;
     }>;

@@ -8,6 +8,7 @@ export declare const name: {
     AGE_RE_TOKEN: number;
     GOOGLE_OAUTH_2: string;
     FACEBOOK_AUTH: string;
+    REDIS_TTL: number;
 };
 export declare const key: {
     SUPER_ADMIN: string;

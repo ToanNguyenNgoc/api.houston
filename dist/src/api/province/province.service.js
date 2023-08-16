@@ -18,16 +18,22 @@ const axios_1 = require("axios");
 const typeorm_1 = require("@nestjs/typeorm");
 const entities_1 = require("./entities");
 const typeorm_2 = require("typeorm");
+const redis_1 = require("../../redis");
 let ProvinceService = class ProvinceService {
-    constructor(provinceRe, districtRe, wardRe) {
+    constructor(provinceRe, districtRe, wardRe, cache) {
         this.provinceRe = provinceRe;
         this.districtRe = districtRe;
         this.wardRe = wardRe;
+        this.cache = cache;
     }
     async findAll() {
+        if (await this.cache.get('PROVINCES')) {
+            return { data: await this.cache.get('PROVINCES') };
+        }
         const response = await this.provinceRe
             .createQueryBuilder('tb_province')
             .getManyAndCount();
+        await this.cache.set('PROVINCES', response[0]);
         if (response[1] === 0) {
             const provincesApi = await axios_1.default.get('https://provinces.open-api.vn/api/?depth=1');
             await this.provinceRe
@@ -113,7 +119,8 @@ ProvinceService = __decorate([
     __param(2, (0, typeorm_1.InjectRepository)(entities_1.Ward)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
         typeorm_2.Repository,
-        typeorm_2.Repository])
+        typeorm_2.Repository,
+        redis_1.RedisCacheService])
 ], ProvinceService);
 exports.ProvinceService = ProvinceService;
 //# sourceMappingURL=province.service.js.map

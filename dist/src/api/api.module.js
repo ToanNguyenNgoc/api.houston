@@ -42,6 +42,7 @@ const payment_method_module_1 = require("./payment_method/payment_method.module"
 const services_1 = require("../services");
 const food_module_1 = require("./food/food.module");
 const food_cate_module_1 = require("./food_cate/food_cate.module");
+const example_module_1 = require("./example/example.module");
 let ApiModule = class ApiModule {
 };
 ApiModule = __decorate([
@@ -77,6 +78,7 @@ ApiModule = __decorate([
             payment_method_module_1.PaymentMethodModule,
             food_module_1.FoodModule,
             food_cate_module_1.FoodCateModule,
+            example_module_1.ExampleModule
         ],
         controllers: [],
         providers: [

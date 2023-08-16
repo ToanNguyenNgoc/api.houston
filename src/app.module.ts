@@ -1,4 +1,3 @@
-import { AuthHeaderModule } from './auth-header/auth-header.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -9,12 +8,14 @@ import { cloudinaryConfig, recaptchaConfig } from './config'
 import { CloudinaryModule } from 'nestjs-cloudinary';
 import { GoogleRecaptchaModule } from '@nestlab/google-recaptcha';
 import { APP_GUARD } from '@nestjs/core';
-// import { ApiHeaderGuard } from './middlewares/guards';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { MailerAsyncOptions } from '@nestjs-modules/mailer/dist/interfaces/mailer-async-options.interface';
 import { Role } from 'src/api/role/entities';
 import { ApiModule } from 'src/api/api.module';
+import { CacheModule } from '@nestjs/cache-manager';
+import * as redisStore from 'cache-manager-redis-store'
+import { name } from 'src/common';
 
 const mailerConfig: MailerAsyncOptions = {
   imports: [ConfigModule],
@@ -49,6 +50,26 @@ const mailerConfig: MailerAsyncOptions = {
     CloudinaryModule.forRootAsync(cloudinaryConfig),
     MailerModule.forRootAsync(mailerConfig),
     GoogleRecaptchaModule.forRootAsync(recaptchaConfig),
+    // CacheModule.register({
+    //   isGlobal: true,
+    //   store: redisStore,
+    //   host: 'localhost',
+    //   port: 6379,
+    //   password: 'toan@06011998',
+    //   ttl: 600000,
+    // }),
+    // CacheModule.registerAsync({
+    //   imports: [CacheModule],
+    //   inject: [ConfigService],
+    //   useFactory: (configService: ConfigService) => ({
+    //     isGlobal: true,
+    //     store: redisStore,
+    //     host: configService.get('REDIS_HOST'),
+    //     port: configService.get('REDIS_PORT'),
+    //     password: configService.get('REDIS_PASSWORD'),
+    //     ttl: name.REDIS_TTL
+    //   })
+    // })
   ],
   controllers: [
     AppController

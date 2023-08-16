@@ -31,6 +31,7 @@ exports.options = new swagger_1.DocumentBuilder()
     .addTag('company_contacts')
     .addTag('company_socials')
     .addTag('provinces & map places')
+    .addTag('example')
     .addApiKey({
     type: 'apiKey',
     name: 'x-api-key',

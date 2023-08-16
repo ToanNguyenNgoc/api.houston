@@ -33,6 +33,7 @@ import { PaymentMethodModule } from './payment_method/payment_method.module';
 import { SendMailService } from 'src/services';
 import { FoodModule } from './food/food.module';
 import { FoodCateModule } from './food_cate/food_cate.module';
+import { ExampleModule } from 'src/api/example/example.module';
 
 @Module({
     imports: [
@@ -69,7 +70,8 @@ import { FoodCateModule } from './food_cate/food_cate.module';
         FoodCateModule,
         // CompanySocialModule,
         // CompanyContactModule,
-        // BlogModule
+        // BlogModule,
+        ExampleModule
     ],
     controllers: [],
     providers: [

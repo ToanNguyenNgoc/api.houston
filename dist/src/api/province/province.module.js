@@ -12,17 +12,18 @@ const province_service_1 = require("./province.service");
 const province_controller_1 = require("./province.controller");
 const typeorm_1 = require("@nestjs/typeorm");
 const entities_1 = require("./entities");
+const redis_1 = require("../../redis");
 let ProvinceModule = class ProvinceModule {
 };
 ProvinceModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([entities_1.Province, entities_1.District, entities_1.Ward])],
+        imports: [typeorm_1.TypeOrmModule.forFeature([entities_1.Province, entities_1.District, entities_1.Ward]), redis_1.RedisCacheModule],
         controllers: [
             province_controller_1.ProvinceController,
             province_controller_1.DistrictController,
             province_controller_1.MapAddressController
         ],
-        providers: [province_service_1.ProvinceService]
+        providers: [province_service_1.ProvinceService, redis_1.RedisCacheService]
     })
 ], ProvinceModule);
 exports.ProvinceModule = ProvinceModule;

@@ -10,7 +10,8 @@ export const name = {
   AGE_TOKEN: 60 * 1000 * 2,
   AGE_RE_TOKEN: onHours * 24 * 30,
   GOOGLE_OAUTH_2: 'google_oauth_2',
-  FACEBOOK_AUTH: 'facebook_auth'
+  FACEBOOK_AUTH: 'facebook_auth',
+  REDIS_TTL: 24 * 60 * 60 // 1 day
 }
 export const key = {
   SUPER_ADMIN: 'Super Admin',

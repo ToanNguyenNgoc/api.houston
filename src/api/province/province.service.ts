@@ -5,6 +5,7 @@ import { District, Province, Ward } from './entities';
 import { Repository } from 'typeorm';
 import { QueryMapDTO } from './dto';
 import { MapBoxResponse, MaxBoxFeature } from '../../interface';
+import { RedisCacheService } from 'src/redis';
 
 @Injectable()
 export class ProvinceService {
@@ -14,12 +15,17 @@ export class ProvinceService {
     @InjectRepository(District)
     private readonly districtRe: Repository<District>,
     @InjectRepository(Ward)
-    private readonly wardRe: Repository<Ward>
+    private readonly wardRe: Repository<Ward>,
+    private readonly cache: RedisCacheService
   ) { }
   async findAll() {
+    if (await this.cache.get('PROVINCES')) {
+      return { data: await this.cache.get('PROVINCES') }
+    }
     const response = await this.provinceRe
       .createQueryBuilder('tb_province')
       .getManyAndCount()
+    await this.cache.set<Province[]>('PROVINCES', response[0])
     if (response[1] === 0) {
       const provincesApi = await axios.get('https://provinces.open-api.vn/api/?depth=1')
       await this.provinceRe
