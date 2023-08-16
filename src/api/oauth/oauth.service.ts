@@ -16,31 +16,33 @@ export class OauthService {
   async onGoogleRedirect(req: Request, res: Response) {
     const cbHomeUrl = process.env.OAUTH_CALLBACK_HOME
     const clientDomain = process.env.CLIENT_DOMAIN
-    try {
+    // try {
       const user = req.user as Customer
       const { token, token_expired_at } = await this.gTokenService.generateToken(user.id, user.email)
       const refresh_token = await this.gTokenService.generateRefreshToken(req, user.id, user.email)
-      return res.cookie('refresh_token', refresh_token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'lax',
-        domain: clientDomain,
-        maxAge: name.AGE_RE_TOKEN
-      })
+      return res
+        .cookie('refresh_token', refresh_token, {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'lax',
+          domain: 'houstongarden.click',
+          maxAge: name.AGE_RE_TOKEN
+        })
         .cookie('token_expired_at', token_expired_at, {
           secure: true,
-          domain: clientDomain,
+          domain: 'houstongarden.click',
           sameSite: 'lax',
           maxAge: name.AGE_RE_TOKEN
         })
         .cookie('access_token', token, {
           secure: true,
-          domain: clientDomain,
+          domain: 'houstongarden.click',
           sameSite: 'lax',
           maxAge: name.AGE_RE_TOKEN
-        }).redirect(cbHomeUrl)
-    } catch (error) {
-      return res.redirect(`${cbHomeUrl}/404`)
-    }
+        })
+        .redirect(cbHomeUrl)
+    // } catch (error) {
+    //   return res.redirect(`${cbHomeUrl}/404`)
+    // }
   }
 }

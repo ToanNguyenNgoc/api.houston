@@ -24,25 +24,27 @@ let OauthService = class OauthService {
             const user = req.user;
             const { token, token_expired_at } = await this.gTokenService.generateToken(user.id, user.email);
             const refresh_token = await this.gTokenService.generateRefreshToken(req, user.id, user.email);
-            return res.cookie('refresh_token', refresh_token, {
+            return res
+                .cookie('refresh_token', refresh_token, {
                 httpOnly: true,
                 secure: true,
                 sameSite: 'lax',
-                domain: clientDomain,
+                domain: 'houstongarden.click',
                 maxAge: common_2.name.AGE_RE_TOKEN
             })
                 .cookie('token_expired_at', token_expired_at, {
                 secure: true,
-                domain: clientDomain,
+                domain: 'houstongarden.click',
                 sameSite: 'lax',
                 maxAge: common_2.name.AGE_RE_TOKEN
             })
                 .cookie('access_token', token, {
                 secure: true,
-                domain: clientDomain,
+                domain: 'houstongarden.click',
                 sameSite: 'lax',
                 maxAge: common_2.name.AGE_RE_TOKEN
-            }).redirect(cbHomeUrl);
+            })
+                .redirect(cbHomeUrl);
         }
         catch (error) {
             return res.redirect(`${cbHomeUrl}/404`);
